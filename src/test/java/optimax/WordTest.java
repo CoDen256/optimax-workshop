@@ -84,6 +84,14 @@ class WordTest {
     void twoWordsAreTheSame() {
         assertEquals(new Word("abcde"), new Word("abcde"));
         assertEquals(new Word("ABCDE"), new Word("abcde"));
+        assertEquals(new Word("xxxxx"), new Word("xxxxx"));
+    }
+
+    @Test
+    void word_string_represents_word() {
+        assertEquals("[a,b,c,d,e]", new Word("abcde").toString());
+        assertEquals("[v,a,l,i,d]", new Word("VALID").toString());
+        assertEquals("[x,x,x,x,x]", new Word("xxxxx").toString());
     }
 
     private char[] letters(String word) {

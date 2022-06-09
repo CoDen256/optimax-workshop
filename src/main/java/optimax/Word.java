@@ -2,7 +2,9 @@ package optimax;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author Denys Chernyshov
@@ -31,6 +33,10 @@ public final class Word {
         return word.toCharArray();
     }
 
+    @Override
+    public String toString() {
+        return Arrays.stream(word.split("")).collect(Collectors.joining(",", "[", "]"));
+    }
 
     @Override
     public boolean equals(Object o) {
