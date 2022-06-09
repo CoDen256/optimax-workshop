@@ -33,7 +33,7 @@ public final class WordleGame {
         return submitted.contains(solution);
     }
 
-    public void submit(Word guess) {
+    public MatchResult submit(Word guess) {
         requireNonNull(guess);
         if (submitted.contains(solution)){
             throw new IllegalStateException(String.format("Game is solved, no more guesses allowed. The solution is: %s", solution));
@@ -46,6 +46,7 @@ public final class WordleGame {
         }
         counter++;
         submitted.add(guess);
+        return null;
     }
 
     public Collection<Word> getSubmitted() {

@@ -144,7 +144,7 @@ class WordleGameTest {
     }
 
     @Test
-    void createNewGameWithDictionary_AcceptWord() {
+    void dictionaryAcceptsWord() {
         WordleGame game = newFakeGame("xxxxx");
         // exercise
         assertDoesNotThrow(() -> submit(game, "xxxxx"));
@@ -153,7 +153,7 @@ class WordleGameTest {
     }
 
     @Test
-    void createNewGameWithDictionary_RejectsWordsThatAreNotInDictionary() {
+    void dictionaryRejectsWordsThatAreNotInDictionary() {
         WordleGame game = newFakeGame("xxxxx");
         // exercise
         assertThrows(IllegalArgumentException.class, () -> submit(game, "yyyyy"));
@@ -164,7 +164,7 @@ class WordleGameTest {
     }
 
     @Test
-    void createNewGameWithDictionary_AcceptsOnlyWordsFromDictionary() {
+    void dictionaryAcceptsOnlyWordsFromDictionary() {
         WordleGame game = newFakeGame("aaaaa", "bbbbb", "ccccc", "ddddd");
 
         // exercise and verify
@@ -185,7 +185,7 @@ class WordleGameTest {
     }
 
     @Test
-    void createNewGameWithDictionaryCaseInsensitive() {
+    void dictionaryCaseInsensitive() {
         WordleGame game = newFakeGame("Aaaaa", "BBBBB", "CcCcC", "dddDD");
 
         // exercise and verify
@@ -200,26 +200,26 @@ class WordleGameTest {
     }
 
     @Test
-    void createGameWithTarget() {
+    void createGameWithSolution() {
         assertDoesNotThrow(() -> newGame("targt", "targt"));
         assertDoesNotThrow(() -> newGame("targt", "abcde", "TARGT"));
         assertDoesNotThrow(() -> newGame("TARGT", "aaaaa", "bbbbb", "targT"));
     }
 
     @Test
-    void createGameWithTargetThatIsNotInDictFails() {
+    void createGameWithSolutionThatIsNotInDictonaryFails() {
         assertThrows(IllegalArgumentException.class, () -> newGame("targt"));
         assertThrows(IllegalArgumentException.class, () -> newGame("targt", "trget", "xxxxx"));
         assertThrows(IllegalArgumentException.class, () -> newGame("targt", "aaaaa", "abcde"));
     }
 
     @Test
-    void createGameWithNullTargetFails() {
+    void createGameWithNullSolutionFails() {
         assertThrows(NullPointerException.class, () -> new WordleGame(null, Set.of(word("valid"))));
     }
 
     @Test
-    void submitSomethingAfterTargetFails() {
+    void submitSomethingAfterSolutionFails() {
         WordleGame game = newGame("valid", "valid", "xxxxx", "aaaaa");
         // exercise
         submit(game, "xxxxx", "aaaaa");
@@ -231,7 +231,7 @@ class WordleGameTest {
     }
 
     @Test
-    void gameIsFinishedAndSolvedAfterTargetSubmitted() {
+    void gameIsFinishedAndSolvedAfterSolutionSubmitted() {
         WordleGame game = newGame("valid", "valid", "xxxxx", "aaaaa", "zzzzz");
 
         submit(game, "xxxxx", "aaaaa", "xxxxx");
@@ -253,7 +253,7 @@ class WordleGameTest {
     }
 
     @Test
-    void gameIsNotSolvedIfNoTargetInserted() {
+    void gameIsNotSolvedIfNoSolutionInserted() {
         WordleGame game = newGame("valid", "valid", "xxxxx", "aaaaa", "zzzzz");
 
         submit(game, "xxxxx", "aaaaa", "xxxxx");
@@ -273,12 +273,20 @@ class WordleGameTest {
                 word("zzzzz")
         ).inOrder();
     }
+//
+//    @Test
+//    void submittedWordReturnsMatchResult() {
+//        WordleGame game = newGame("valid", "valid", "xxxxx", "aaaaa", "zzzzz");
+//
+//        MatchResult result = game.submit(word("valid"));
+//        assertEquals(matchResult(), result);
+//    }
 
     private WordleGame newFakeGame(String... dict) {
         Collection<String> resultDict = new ArrayList<>(Arrays.asList(dict));
-        String fakeTarget = "valid";
-        resultDict.add(fakeTarget);
-        return newGame(fakeTarget, resultDict);
+        String fakeSolution = "valid";
+        resultDict.add(fakeSolution);
+        return newGame(fakeSolution, resultDict);
     }
 
     private WordleGame newGame(String solution, String... dict) {
@@ -297,5 +305,9 @@ class WordleGameTest {
         for (String word : words) {
             game.submit(word(word));
         }
+    }
+
+    private MatchResult matchResult(Match...matches){
+        return new MatchResult(matches);
     }
 }
