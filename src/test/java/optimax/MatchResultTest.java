@@ -2,6 +2,7 @@ package optimax;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -10,12 +11,96 @@ import org.junit.jupiter.api.Test;
  */
 class MatchResultTest {
     @Test
-    void createMatchResult() {
+    void createEmptyMatchResultFails() {
+        assertThrows(IllegalArgumentException.class, () -> new MatchResult(List.of()));
     }
 
-    //
-//    @Test
-//    void sameResultsAreEqual() {
-//        Ma
-//    }
+    @Test
+    void createMatchResultWithNullMatches() {
+        assertThrows(NullPointerException.class, () -> new MatchResult(null));
+    }
+
+    @Test
+    void createMatchResultWithLessThan5MatchesFails() {
+        assertThrows(IllegalArgumentException.class, () -> new MatchResult(
+                List.of(Match.ABSENT, Match.CORRECT, Match.PRESENT, Match.CORRECT)
+        ));
+    }
+
+    @Test
+    void createMatchResultWithMoreThan5MatchesFails() {
+        assertThrows(IllegalArgumentException.class, () -> new MatchResult(
+                List.of(Match.ABSENT, Match.CORRECT, Match.PRESENT, Match.CORRECT, Match.CORRECT, Match.PRESENT)
+        ));
+    }
+
+
+    @Test
+    void createMatchResultWith5Matches() {
+        assertDoesNotThrow(() -> new MatchResult(
+                List.of(Match.ABSENT, Match.CORRECT, Match.PRESENT, Match.CORRECT, Match.CORRECT)
+        ));
+    }
+
+    @Test
+    void getMatchAtFailsIfNotInRange() {
+        MatchResult result = new MatchResult(
+                List.of(Match.ABSENT, Match.CORRECT, Match.PRESENT, Match.CORRECT, Match.CORRECT)
+        );
+        assertThrows(IllegalArgumentException.class, () -> result.getMatch(-2));
+        assertThrows(IllegalArgumentException.class, () -> result.getMatch(-1));
+        assertThrows(IllegalArgumentException.class, () -> result.getMatch(5));
+        assertThrows(IllegalArgumentException.class, () -> result.getMatch(6));
+        assertThrows(IllegalArgumentException.class, () -> result.getMatch(12));
+    }
+
+
+        @Test
+    void getMatchAtPosition() {
+        MatchResult result = new MatchResult(
+                List.of(Match.ABSENT, Match.CORRECT, Match.PRESENT, Match.CORRECT, Match.CORRECT)
+        );
+
+        assertEquals(Match.ABSENT, result.getMatch(0));
+        assertEquals(Match.CORRECT, result.getMatch(1));
+        assertEquals(Match.PRESENT, result.getMatch(2));
+        assertEquals(Match.CORRECT, result.getMatch(3));
+        assertEquals(Match.CORRECT, result.getMatch(4));
+    }
+
+    @Test
+    void differentResultsAreNotEqual() {
+        MatchResult result = new MatchResult(
+                List.of(Match.ABSENT, Match.CORRECT, Match.PRESENT, Match.CORRECT, Match.CORRECT)
+        );
+        MatchResult result2 = new MatchResult(
+                List.of(Match.ABSENT, Match.PRESENT, Match.PRESENT, Match.PRESENT, Match.PRESENT)
+        );
+
+        assertNotEquals(result, result2);
+    }
+
+    @Test
+    void sameResultsAreEqual() {
+        MatchResult result = new MatchResult(
+                List.of(Match.ABSENT, Match.CORRECT, Match.PRESENT, Match.CORRECT, Match.CORRECT)
+        );
+        MatchResult result2 = new MatchResult(
+                List.of(Match.ABSENT, Match.CORRECT, Match.PRESENT, Match.CORRECT, Match.CORRECT)
+        );
+
+        assertEquals(result, result2);
+    }
+
+    @Test
+    void sameResultsDifferentOrderAreNotEqual() {
+        MatchResult result = new MatchResult(
+                List.of(Match.ABSENT, Match.CORRECT, Match.PRESENT, Match.CORRECT, Match.CORRECT)
+        );
+        MatchResult result2 = new MatchResult(
+                List.of(Match.ABSENT, Match.CORRECT, Match.CORRECT, Match.PRESENT, Match.CORRECT)
+        );
+
+        assertNotEquals(result, result2);
+    }
 }

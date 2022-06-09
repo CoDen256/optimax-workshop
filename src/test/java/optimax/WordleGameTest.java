@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -308,6 +309,6 @@ class WordleGameTest {
     }
 
     private MatchResult matchResult(Match...matches){
-        return new MatchResult(matches);
+        return new MatchResult(Arrays.asList(matches));
     }
 }
