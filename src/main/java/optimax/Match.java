@@ -6,4 +6,6 @@ package optimax;
  */
 public enum Match {
     ABSENT, PRESENT, CORRECT
+
+
 }

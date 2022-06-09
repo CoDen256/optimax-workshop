@@ -2,8 +2,10 @@ package optimax;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author Denys Chernyshov
@@ -39,6 +41,18 @@ public class MatchResult {
     @Override
     public int hashCode() {
         return Objects.hash(matches);
+    }
+
+    @Override
+    public String toString() {
+        return matches.stream()
+                .map(m -> {
+                    if (m == Match.ABSENT) return "x";
+                    else if(m == Match.PRESENT) return "-";
+                    else if (m == Match.CORRECT) return "+";
+                    else throw new AssertionError();
+                })
+                .collect(Collectors.joining("", "Result[", "]"));
     }
 }
 

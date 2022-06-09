@@ -1,7 +1,10 @@
 package optimax;
 
 import static com.google.common.truth.Truth.assertThat;
+import static optimax.Match.CORRECT;
+import static optimax.Match.PRESENT;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -274,14 +277,14 @@ class WordleGameTest {
                 word("zzzzz")
         ).inOrder();
     }
-//
-//    @Test
-//    void submittedWordReturnsMatchResult() {
-//        WordleGame game = newGame("valid", "valid", "xxxxx", "aaaaa", "zzzzz");
-//
-//        MatchResult result = game.submit(word("valid"));
-//        assertEquals(matchResult(), result);
-//    }
+
+    @Test
+    void submittedWordReturnsMatchResult() {
+        WordleGame game = newGame("valid", "valid", "aalid", "aaaaa", "zzzzz");
+
+        assertEquals(matchResult(PRESENT, CORRECT, CORRECT, CORRECT, CORRECT), game.submit(word("aalid")));
+        assertEquals(matchResult(CORRECT, CORRECT, CORRECT, CORRECT, CORRECT), game.submit(word("valid")));
+    }
 
     private WordleGame newFakeGame(String... dict) {
         Collection<String> resultDict = new ArrayList<>(Arrays.asList(dict));

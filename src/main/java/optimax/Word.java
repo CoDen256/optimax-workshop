@@ -35,7 +35,7 @@ public final class Word {
 
     @Override
     public String toString() {
-        return Arrays.stream(word.split("")).collect(Collectors.joining(",", "[", "]"));
+        return Arrays.stream(word.split("")).collect(Collectors.joining(",", "<", ">"));
     }
 
     @Override

@@ -103,4 +103,10 @@ class MatchResultTest {
 
         assertNotEquals(result, result2);
     }
+
+    @Test
+    void matchResultToString() {
+        MatchResult result = new MatchResult(List.of(Match.ABSENT, Match.CORRECT, Match.PRESENT, Match.CORRECT, Match.ABSENT));
+        assertEquals("Result[x+-+x]", result.toString());
+    }
 }

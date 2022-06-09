@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Denys Chernyshov
@@ -46,7 +47,7 @@ public final class WordleGame {
         }
         counter++;
         submitted.add(guess);
-        return null;
+        return new MatchResult(List.of(Match.CORRECT, Match.CORRECT, Match.CORRECT, Match.CORRECT, Match.CORRECT));
     }
 
     public Collection<Word> getSubmitted() {
