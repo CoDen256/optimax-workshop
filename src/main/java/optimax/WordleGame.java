@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import optimax.accepter.WordAccepter;
 
 /**
  * @author Denys Chernyshov
@@ -16,13 +17,13 @@ public final class WordleGame {
     private final Word solution;
     private int counter = 0;
     private final Collection<Word> submitted = new ArrayList<>();
-    private final Collection<? extends Word> dictionary;
+    private final WordAccepter accepter;
 
-    public WordleGame(Word solution, Collection<? extends Word> dictionary) {
-        this.dictionary = requireNonNull(dictionary);
+    public WordleGame(Word solution, WordAccepter accepter) {
+        this.accepter = requireNonNull(accepter);
         this.solution = requireNonNull(solution);
-        if (!dictionary.contains(solution)){
-            throw new IllegalArgumentException(String.format("Solution (%s) is not in dictionary", solution));
+        if (!accepter.accept(solution)){
+            throw new IllegalArgumentException(String.format("Solution (%s) is not accepted", solution));
         }
     }
 
@@ -42,8 +43,8 @@ public final class WordleGame {
         if (counter == 5) {
             throw new IllegalStateException(String.format("Game is finished, no more guesses allowed. Guess submitted: %s", guess));
         }
-        if (!dictionary.contains(guess)){
-            throw new IllegalArgumentException(String.format("Word %s is not present in the dictionary", guess));
+        if (!accepter.accept(guess)){
+            throw new IllegalArgumentException(String.format("Word %s is not accepted", guess));
         }
         counter++;
         submitted.add(guess);
