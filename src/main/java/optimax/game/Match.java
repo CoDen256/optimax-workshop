@@ -1,11 +1,11 @@
-package optimax;
+package optimax.game;
 
 /**
  * @author Denys Chernyshov
  * @since 1.0
  */
 public enum Match {
-    ABSENT, PRESENT, CORRECT
+    ABSENT, WRONG, CORRECT
 
 
 }

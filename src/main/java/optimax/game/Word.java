@@ -1,4 +1,4 @@
-package optimax;
+package optimax.game;
 
 import static java.util.Objects.requireNonNull;
 
@@ -31,6 +31,10 @@ public final class Word {
 
     public char[] getLetters() {
         return word.toCharArray();
+    }
+
+    public String getWord() {
+        return word;
     }
 
     @Override

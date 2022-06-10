@@ -1,8 +1,7 @@
-package optimax;
+package optimax.game;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -48,7 +47,7 @@ public class MatchResult {
         return matches.stream()
                 .map(m -> {
                     if (m == Match.ABSENT) return "x";
-                    else if(m == Match.PRESENT) return "-";
+                    else if(m == Match.WRONG) return "-";
                     else if (m == Match.CORRECT) return "+";
                     else throw new AssertionError();
                 })

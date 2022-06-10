@@ -1,4 +1,4 @@
-package optimax;
+package optimax.game;
 
 import static java.util.Objects.requireNonNull;
 
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import optimax.accepter.WordAccepter;
+import optimax.game.accepter.WordAccepter;
 
 /**
  * @author Denys Chernyshov
@@ -48,6 +48,7 @@ public final class WordleGame {
         }
         counter++;
         submitted.add(guess);
+//        if (guess.getWord().)
         return new MatchResult(List.of(Match.CORRECT, Match.CORRECT, Match.CORRECT, Match.CORRECT, Match.CORRECT));
     }
 

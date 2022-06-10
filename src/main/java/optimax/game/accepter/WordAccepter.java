@@ -1,6 +1,6 @@
-package optimax.accepter;
+package optimax.game.accepter;
 
-import optimax.Word;
+import optimax.game.Word;
 
 /**
  * @author Denys Chernyshov

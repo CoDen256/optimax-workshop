@@ -1,7 +1,7 @@
-package optimax;
+package optimax.game;
 
 import static com.google.common.truth.Truth.assertThat;
-import static optimax.TestUtils.word;
+import static optimax.game.WordleGameTestUtils.word;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;

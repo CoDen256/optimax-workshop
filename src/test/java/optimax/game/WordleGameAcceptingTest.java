@@ -1,6 +1,6 @@
-package optimax;
+package optimax.game;
 
-import static optimax.TestUtils.word;
+import static optimax.game.WordleGameTestUtils.word;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
