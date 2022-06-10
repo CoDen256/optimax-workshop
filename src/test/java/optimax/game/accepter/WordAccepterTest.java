@@ -1,9 +1,10 @@
-package optimax.game;
+package optimax.game.accepter;
 
 import static optimax.game.TestUtilities.word;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import optimax.game.Word;
 import optimax.game.accepter.WordAccepter;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,7 @@ import org.junit.jupiter.api.Test;
 class WordAccepterTest {
 
     @Test
-    void givenAccepter_GameAcceptsOnlyWordsFromAccepter() {
+    void accepterAcceptsOnlyWordsMatchingPredicate() {
         WordAccepter accepter = s -> s.word().charAt(0) == 'v';
 
         assertFalse(accepter.accept(word("xxxxx")));
@@ -32,7 +33,7 @@ class WordAccepterTest {
 
 
     @Test
-    void givenOneWordAccepter_AcceptsNoWordExceptForSolution() {
+    void oneWordAccepterAcceptsNoWordExceptForSolution() {
         Word solution = word("valid");
         WordAccepter accepter = solution::equals;
 
@@ -45,7 +46,7 @@ class WordAccepterTest {
     }
 
     @Test
-    void givenFalseAccepter_AcceptsNoWordExceptForSolution() {
+    void falseAccepterAcceptsNoWords() {
         WordAccepter accepter = s -> false;
 
         assertFalse(accepter.accept(word("xxxxx")));
@@ -56,7 +57,7 @@ class WordAccepterTest {
     }
 
     @Test
-    void givenTrueAccepter_AcceptsAnyWord() {
+    void trueAccepterAcceptsAnyWord() {
         WordAccepter accepter = s -> true;
         assertTrue(accepter.accept(word("xxxxx")));
         assertTrue(accepter.accept(word("abcde")));

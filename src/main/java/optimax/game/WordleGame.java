@@ -22,10 +22,10 @@ public final class WordleGame {
     private final WordAccepter accepter;
     private final WordMatcher comparer;
 
-    public WordleGame(Word solution, WordAccepter accepter, WordMatcher comparer) {
+    public WordleGame(Word solution, WordAccepter accepter, WordMatcher matcher) {
         this.accepter = requireNonNull(accepter);
         this.solution = requireNonNull(solution);
-        this.comparer = requireNonNull(comparer);
+        this.comparer = requireNonNull(matcher);
         if (accepter.isNotAccepted(solution)) throw new IllegalArgumentException(format("Solution (%s) is not accepted", solution));
     }
 

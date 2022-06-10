@@ -1,4 +1,4 @@
-package optimax.game;
+package optimax.game.matcher;
 
 import static optimax.game.TestUtilities.word;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
  * @author Denys Chernyshov
  * @since 1.0
  */
-class WordMatcherTest {
+class StandardWordMatcherTest {
     private final StandardMatcher sut = new StandardMatcher();
 
     @Test
