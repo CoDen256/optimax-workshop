@@ -1,11 +1,9 @@
 package optimax.game;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import optimax.game.Word;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -16,11 +14,11 @@ class WordTest {
 
     @Test
     void createWordGetSameLetters() {
-        assertArrayEquals(letters("valid"), new Word("valid").getLetters());
-        assertArrayEquals(letters("adult"), new Word("adult").getLetters());
-        assertArrayEquals(letters("pesto"), new Word("pesto").getLetters());
-        assertArrayEquals(letters("xxxxx"), new Word("xxxxx").getLetters());
-        assertArrayEquals(letters("äüößz"), new Word("äüößz").getLetters());
+        assertEquals("valid", new Word("valid").word());
+        assertEquals("adult", new Word("adult").word());
+        assertEquals("pesto", new Word("pesto").word());
+        assertEquals("xxxxx", new Word("xxxxx").word());
+        assertEquals("äüößz", new Word("äüößz").word());
     }
 
 
@@ -65,15 +63,15 @@ class WordTest {
 
     @Test
     void createWordIsCaseInsensitive() {
-        assertArrayEquals(letters("valid"), new Word("Valid").getLetters());
-        assertArrayEquals(letters("valid"), new Word("VALID").getLetters());
-        assertArrayEquals(letters("xxxxx"), new Word("XxXxX").getLetters());
+        assertEquals("valid", new Word("Valid").word());
+        assertEquals("valid", new Word("VALID").word());
+        assertEquals("xxxxx", new Word("XxXxX").word());
     }
 
     @Test
     void createWordSameOrder() {
-        assertArrayEquals(letters("alidv"), new Word("alidv").getLetters());
-        assertArrayEquals(letters("abcde"), new Word("abcde").getLetters());
+        assertEquals("alidv", new Word("alidv").word());
+        assertEquals("abcde", new Word("abcde").word());
     }
 
     @Test
@@ -93,9 +91,5 @@ class WordTest {
         assertEquals("<a,b,c,d,e>", new Word("abcde").toString());
         assertEquals("<v,a,l,i,d>", new Word("VALID").toString());
         assertEquals("<x,x,x,x,x>", new Word("xxxxx").toString());
-    }
-
-    private char[] letters(String word) {
-        return word.toCharArray();
     }
 }

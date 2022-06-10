@@ -48,7 +48,7 @@ public final class WordleGame {
         }
         counter++;
         submitted.add(guess);
-//        if (guess.getWord().)
+//        if (guess.word().)
         return new MatchResult(List.of(Match.CORRECT, Match.CORRECT, Match.CORRECT, Match.CORRECT, Match.CORRECT));
     }
 

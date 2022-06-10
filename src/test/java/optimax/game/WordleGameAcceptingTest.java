@@ -14,7 +14,7 @@ class WordleGameAcceptingTest {
 
     @Test
     void givenAccepter_GameAcceptsOnlyWordsFromAccepter() {
-        WordleGame game = new WordleGame(word("valid"), s -> s.getLetters()[0] == 'v');
+        WordleGame game = new WordleGame(word("valid"), s -> s.word().charAt(0) == 'v');
         assertThrows(IllegalArgumentException.class, () -> game.submit(word("xxxxx")));
         assertThrows(IllegalArgumentException.class, () -> game.submit(word("abcde")));
         assertThrows(IllegalArgumentException.class, () -> game.submit(word("fghjk")));

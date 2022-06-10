@@ -29,13 +29,10 @@ public final class Word {
         this.word = word.toLowerCase();
     }
 
-    public char[] getLetters() {
-        return word.toCharArray();
-    }
-
-    public String getWord() {
+    public String word() {
         return word;
     }
+
 
     @Override
     public String toString() {
