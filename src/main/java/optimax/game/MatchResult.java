@@ -2,6 +2,7 @@ package optimax.game;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -13,6 +14,10 @@ import java.util.stream.Collectors;
 public class MatchResult {
 
     private final List<Match> matches;
+
+    public MatchResult(Match...matches) {
+        this(Arrays.asList(matches));
+    }
 
     public MatchResult(List<Match> matches) {
         requireNonNull(matches);

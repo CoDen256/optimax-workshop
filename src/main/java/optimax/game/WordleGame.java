@@ -1,8 +1,12 @@
 package optimax.game;
 
 import static java.util.Objects.requireNonNull;
+import static optimax.game.Match.ABSENT;
+import static optimax.game.Match.CORRECT;
+import static optimax.game.Match.WRONG;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +19,6 @@ import optimax.game.accepter.WordAccepter;
 public final class WordleGame {
 
     private final Word solution;
-    private int counter = 0;
     private final Collection<Word> submitted = new ArrayList<>();
     private final WordAccepter accepter;
 
@@ -28,7 +31,7 @@ public final class WordleGame {
     }
 
     public boolean isFinished() {
-        return counter == 5 || submitted.contains(solution);
+        return submitted.size() == 5 || isSolved();
     }
 
     public boolean isSolved() {
@@ -37,21 +40,43 @@ public final class WordleGame {
 
     public MatchResult submit(Word guess) {
         requireNonNull(guess);
-        if (submitted.contains(solution)){
+        if (isSolved())
             throw new IllegalStateException(String.format("Game is solved, no more guesses allowed. The solution is: %s", solution));
-        }
-        if (counter == 5) {
+        if (isFinished())
             throw new IllegalStateException(String.format("Game is finished, no more guesses allowed. Guess submitted: %s", guess));
-        }
-        if (!accepter.accept(guess)){
+        if (!accepter.accept(guess))
             throw new IllegalArgumentException(String.format("Word %s is not accepted", guess));
-        }
-        counter++;
         submitted.add(guess);
-//        if (guess.word().)
-        return new MatchResult(List.of(Match.CORRECT, Match.CORRECT, Match.CORRECT, Match.CORRECT, Match.CORRECT));
+        return match(guess, solution);
     }
 
+    private MatchResult match(Word guess, Word solution){
+        List<String> solutionChars = new ArrayList<>(Arrays.asList(solution.word().split("")));
+        List<String> guessChars =  new ArrayList<>(Arrays.asList(guess.word().split("")));
+
+        String matched = "matched";
+        String wronged = "wronged";
+        Match[] matches = new Match[]{CORRECT, CORRECT, CORRECT, CORRECT, CORRECT};
+        for (int i = 0; i < 5; i++) {
+            if (solutionChars.get(i).equals(guessChars.get(i))){
+                solutionChars.set(i, matched);
+            }
+        }
+
+        for (int i = 0; i < 5; i++) {
+            if (solutionChars.get(i).equals(matched)) continue;
+
+            int indx = solutionChars.indexOf(guessChars.get(i));
+            if (!solutionChars.get(i).equals(guessChars.get(i)) && indx != -1) {
+                solutionChars.set(indx, wronged);
+                matches[i] = WRONG;
+            }
+            else if (!solutionChars.get(i).equals(guessChars.get(i))){
+                matches[i] = ABSENT;
+            }
+        }
+        return new MatchResult(matches);
+    }
     public Collection<Word> getSubmitted() {
         return Collections.unmodifiableCollection(submitted);
     }

@@ -17,7 +17,7 @@ class MatchResultTest {
 
     @Test
     void createMatchResultWithNullMatches() {
-        assertThrows(NullPointerException.class, () -> new MatchResult(null));
+        assertThrows(NullPointerException.class, () -> new MatchResult((List<Match>) null));
     }
 
     @Test
