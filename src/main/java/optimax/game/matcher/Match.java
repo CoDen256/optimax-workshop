@@ -1,4 +1,4 @@
-package optimax.game;
+package optimax.game.matcher;
 
 /**
  * @author Denys Chernyshov
@@ -6,6 +6,5 @@ package optimax.game;
  */
 public enum Match {
     ABSENT, WRONG, CORRECT
-
 
 }

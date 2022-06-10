@@ -1,16 +1,18 @@
 package optimax.game;
 
-import static optimax.game.WordleGameTestUtils.word;
+import static optimax.game.TestUtilities.word;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import optimax.game.matcher.StandardMatcher;
+import optimax.game.matcher.MatchResult;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author Denys Chernyshov
  * @since 1.0
  */
-class WordleGameMatchingTest {
-
+class WordMatcherTest {
+    private final StandardMatcher sut = new StandardMatcher();
 
     @Test
     void allLettersCorrect() {
@@ -172,7 +174,7 @@ class WordleGameMatchingTest {
     }
 
     private void assertMatches(String expected, String solution, String actual) {
-        MatchResult match = new WordleGame(word(solution), s -> true).submit(word(actual));
-        assertEquals(String.format("Result[%s]", expected), match.toString());
+        MatchResult result = sut.match(word(solution), word(actual));
+        assertEquals(String.format("Result[%s]", expected), result.toString());
     }
 }

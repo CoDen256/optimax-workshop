@@ -1,11 +1,12 @@
 package optimax.game;
 
 import static com.google.common.truth.Truth.assertThat;
-import static optimax.game.WordleGameTestUtils.word;
+import static optimax.game.TestUtilities.word;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import optimax.game.matcher.StandardMatcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +22,7 @@ class WordleGameSubmittingTest {
 
     @BeforeEach
     void setUp() {
-        game = new WordleGame(SOLUTION, w -> true);
+        game = new WordleGame(SOLUTION, w -> true, new StandardMatcher());
     }
 
     @Test
