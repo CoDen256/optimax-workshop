@@ -16,17 +16,21 @@ import optimax.game.matcher.WordMatcher;
  */
 public final class WordleGame {
 
-    public static final int MAX_ATTEMPTS = 5;
+    public static final int MAX_ATTEMPTS = 6;
+    /** The solution of the game */
     private final Word solution;
     private final Collection<Word> submitted = new ArrayList<>();
+    /** Checks whether the given guess is accepted */
     private final WordAccepter accepter;
-    private final WordMatcher comparer;
+    /** Computes the {@link MatchResult} for the given guess in comparison with the solution */
+    private final WordMatcher matcher;
 
     public WordleGame(Word solution, WordAccepter accepter, WordMatcher matcher) {
         this.accepter = requireNonNull(accepter);
         this.solution = requireNonNull(solution);
-        this.comparer = requireNonNull(matcher);
-        if (accepter.isNotAccepted(solution)) throw new IllegalArgumentException(format("Solution (%s) is not accepted", solution));
+        this.matcher = requireNonNull(matcher);
+        if (accepter.isNotAccepted(solution))
+            throw new IllegalArgumentException(format("Solution (%s) is not accepted", solution));
     }
 
     public boolean isFinished() {
@@ -50,6 +54,6 @@ public final class WordleGame {
         if (accepter.isNotAccepted(guess))
             throw new IllegalArgumentException(format("Word %s is not accepted", guess));
         submitted.add(guess);
-        return comparer.match(solution, guess);
+        return matcher.match(solution, guess);
     }
 }

@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import optimax.game.Word;
-import optimax.game.accepter.WordAccepter;
 import org.junit.jupiter.api.Test;
 
 
@@ -19,16 +18,16 @@ class WordAccepterTest {
     void accepterAcceptsOnlyWordsMatchingPredicate() {
         WordAccepter accepter = s -> s.word().charAt(0) == 'v';
 
-        assertFalse(accepter.accept(word("xxxxx")));
-        assertFalse(accepter.accept(word("abcde")));
-        assertFalse(accepter.accept(word("fghjk")));
-        assertFalse(accepter.accept(word("YYYYY")));
-        assertFalse(accepter.accept(word("ZZZZZ")));
-        assertTrue(accepter.accept(word("Vbcde")));
-        assertTrue(accepter.accept(word("vbcde")));
-        assertTrue(accepter.accept(word("vaaaa")));
-        assertTrue(accepter.accept(word("valis")));
-        assertTrue(accepter.accept(word("VVVVV")));
+        assertFalse(accepter.isAccepted(word("xxxxx")));
+        assertFalse(accepter.isAccepted(word("abcde")));
+        assertFalse(accepter.isAccepted(word("fghjk")));
+        assertFalse(accepter.isAccepted(word("YYYYY")));
+        assertFalse(accepter.isAccepted(word("ZZZZZ")));
+        assertTrue(accepter.isAccepted(word("Vbcde")));
+        assertTrue(accepter.isAccepted(word("vbcde")));
+        assertTrue(accepter.isAccepted(word("vaaaa")));
+        assertTrue(accepter.isAccepted(word("valis")));
+        assertTrue(accepter.isAccepted(word("VVVVV")));
     }
 
 
@@ -37,32 +36,32 @@ class WordAccepterTest {
         Word solution = word("valid");
         WordAccepter accepter = solution::equals;
 
-         assertFalse(accepter.accept(word("xxxxx")));
-         assertFalse(accepter.accept(word("abcde")));
-         assertFalse(accepter.accept(word("fghjk")));
-         assertFalse(accepter.accept(word("YYYYY")));
-         assertFalse(accepter.accept(word("ZZZZZ")));
-         assertTrue(accepter.accept(solution));
+         assertFalse(accepter.isAccepted(word("xxxxx")));
+         assertFalse(accepter.isAccepted(word("abcde")));
+         assertFalse(accepter.isAccepted(word("fghjk")));
+         assertFalse(accepter.isAccepted(word("YYYYY")));
+         assertFalse(accepter.isAccepted(word("ZZZZZ")));
+         assertTrue(accepter.isAccepted(solution));
     }
 
     @Test
     void falseAccepterAcceptsNoWords() {
         WordAccepter accepter = s -> false;
 
-        assertFalse(accepter.accept(word("xxxxx")));
-        assertFalse(accepter.accept(word("abcde")));
-        assertFalse(accepter.accept(word("fghjk")));
-        assertFalse(accepter.accept(word("YYYYY")));
-        assertFalse(accepter.accept(word("ZZZZZ")));
+        assertFalse(accepter.isAccepted(word("xxxxx")));
+        assertFalse(accepter.isAccepted(word("abcde")));
+        assertFalse(accepter.isAccepted(word("fghjk")));
+        assertFalse(accepter.isAccepted(word("YYYYY")));
+        assertFalse(accepter.isAccepted(word("ZZZZZ")));
     }
 
     @Test
     void trueAccepterAcceptsAnyWord() {
         WordAccepter accepter = s -> true;
-        assertTrue(accepter.accept(word("xxxxx")));
-        assertTrue(accepter.accept(word("abcde")));
-        assertTrue(accepter.accept(word("fghjk")));
-        assertTrue(accepter.accept(word("YYYYY")));
-        assertTrue(accepter.accept(word("ZZZZZ")));
+        assertTrue(accepter.isAccepted(word("xxxxx")));
+        assertTrue(accepter.isAccepted(word("abcde")));
+        assertTrue(accepter.isAccepted(word("fghjk")));
+        assertTrue(accepter.isAccepted(word("YYYYY")));
+        assertTrue(accepter.isAccepted(word("ZZZZZ")));
     }
 }

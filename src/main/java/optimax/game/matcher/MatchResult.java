@@ -8,14 +8,15 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
+ * Represents a {@code MatchResult}, containing 5 {@link Match}es for each letter in the {@link optimax.game.Word}
+ *
  * @author Denys Chernyshov
  * @since 1.0
  */
 public class MatchResult {
-
     private final List<Match> matches;
 
-    public MatchResult(Match...matches) {
+    public MatchResult(Match... matches) {
         this(Arrays.asList(matches));
     }
 
@@ -52,7 +53,7 @@ public class MatchResult {
         return matches.stream()
                 .map(m -> {
                     if (m == Match.ABSENT) return "x";
-                    else if(m == Match.WRONG) return "-";
+                    else if (m == Match.WRONG) return "-";
                     else if (m == Match.CORRECT) return "+";
                     else throw new AssertionError();
                 })

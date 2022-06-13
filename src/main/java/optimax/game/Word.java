@@ -7,6 +7,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
+ * Represents a valid 5-letter Wordle word, that contains only alphabetic characters.
+ *
  * @author Denys Chernyshov
  * @since 1.0
  */
@@ -16,12 +18,12 @@ public final class Word {
 
     public Word(String word) {
         requireNonNull(word);
-        if (word.length() != 5){
+        if (word.length() != 5) {
             throw new IllegalArgumentException(
                     String.format("Word length must be 5, but was: %d (%s)", word.length(), word));
         }
         for (char c : word.toCharArray()) {
-            if (!Character.isAlphabetic(c)){
+            if (!Character.isAlphabetic(c)) {
                 throw new IllegalArgumentException(
                         String.format("Word must contain only alphabetic letters, but '%c' was found", c));
             }

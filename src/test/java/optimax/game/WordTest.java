@@ -21,8 +21,6 @@ class WordTest {
         assertEquals("äüößz", new Word("äüößz").word());
     }
 
-
-
     @Test
     void createWordWithNumbersFail() {
         assertThrows(IllegalArgumentException.class, () -> new Word("vali5"));

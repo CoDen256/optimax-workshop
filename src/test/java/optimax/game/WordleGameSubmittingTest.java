@@ -69,18 +69,18 @@ class WordleGameSubmittingTest {
     }
 
     @Test
-    void submitWord5Times_GameIsFinished() {
-        submit(word("xxxxx"), word("yyyyy"), word("zzzzz"), word("xxxxx"));
+    void submitWord6Times_GameIsFinished() {
+        submit(word("xxxxx"), word("yyyyy"), word("zzzzz"), word("xxxxx"), word("yyyyy"));
         assertFalse(game.isFinished());
         submit(word("yyyyy"));
         assertTrue(game.isFinished());
     }
 
     @Test
-    void submitWordMoreThan5TimesFails() {
+    void submitWordMoreThan6TimesFails() {
         Word guess = word("xxxxx");
         // exercise
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
             submit(guess);
         }
         // verify
@@ -94,7 +94,7 @@ class WordleGameSubmittingTest {
         assertFalse(game.isSolved());
         assertFalse(game.isFinished());
 
-        submit(word("xxxxx"), word("zzzzz"));
+        submit(word("xxxxx"), word("zzzzz"), word("bbbbb"));
         assertFalse(game.isSolved());
         assertTrue(game.isFinished());
 
@@ -173,6 +173,11 @@ class WordleGameSubmittingTest {
 
         // Fifth guess
         submit(word("yyyyy"));
+        assertFalse(game.isFinished());
+        assertFalse(game.isSolved());
+
+        // Sixth guess
+        submit(word("yyyyy"));
         assertTrue(game.isFinished());
         assertFalse(game.isSolved());
 
@@ -188,6 +193,7 @@ class WordleGameSubmittingTest {
                 word("yyyyy"),
                 word("zzzzz"),
                 word("xxxxx"),
+                word("yyyyy"),
                 word("yyyyy")
         ).inOrder();
     }
