@@ -11,7 +11,7 @@ import optimax.game.run.guesser.Guesser;
  */
 public abstract class GameRunner {
 
-    void run(){
+    public void run(){
         WordleGame game = createGame();
         Guesser guesser = createGuesser();
         onCreated(game, guesser);

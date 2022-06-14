@@ -12,14 +12,14 @@ import optimax.game.run.guesser.Guesser;
  * @author Denys Chernyshov
  * @since 1.0
  */
-public class DictionaryAwareWordleGameRunner extends GameRunner {
+public class DictionaryAwareGameRunner extends GameRunner {
 
-    private final DictionaryAwareGuesser guesser;
+    private final Supplier<DictionaryAwareGuesser> guesserFactory;
     private final Supplier<WordleGame> gameFactory;
     private final Collection<Word> dict;
 
-    public DictionaryAwareWordleGameRunner(Supplier<WordleGame> gameFactory, Collection<Word> dict, DictionaryAwareGuesser guesser) {
-        this.guesser = guesser;
+    public DictionaryAwareGameRunner(Supplier<WordleGame> gameFactory, Collection<Word> dict, Supplier<DictionaryAwareGuesser> guesser) {
+        this.guesserFactory = guesser;
         this.gameFactory = gameFactory;
         this.dict = dict;
     }
@@ -27,17 +27,19 @@ public class DictionaryAwareWordleGameRunner extends GameRunner {
 
     @Override
     protected WordleGame createGame() {
-        return null;
+        return gameFactory.get();
     }
 
     @Override
     protected Guesser createGuesser() {
-        return null;
+        DictionaryAwareGuesser guesser = guesserFactory.get();
+        guesser.init(dict);
+        return guesser;
     }
 
     @Override
     protected void onCreated(WordleGame game, Guesser guesser) {
-
+        sout
     }
 
     @Override

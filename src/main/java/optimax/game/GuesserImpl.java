@@ -3,9 +3,9 @@ package optimax.game;
 import java.util.Collection;
 import optimax.game.core.Word;
 import optimax.game.core.matcher.MatchResult;
-import optimax.game.run.guesser.Guesser;
+import optimax.game.run.guesser.DictionaryAwareGuesser;
 
-public class GuesserImpl implements Guesser {
+public class GuesserImpl implements DictionaryAwareGuesser {
     @Override
     public void init(Collection<Word> dictionary) {
 
