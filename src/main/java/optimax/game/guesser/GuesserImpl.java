@@ -1,4 +1,4 @@
-package optimax.game;
+package optimax.game.guesser;
 
 import java.util.Collection;
 import optimax.game.core.Word;

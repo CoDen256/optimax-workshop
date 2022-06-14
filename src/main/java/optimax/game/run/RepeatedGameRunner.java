@@ -13,7 +13,7 @@ public abstract class RepeatedGameRunner extends GameRunner{
     }
 
     @Override
-    void run() {
+    public void run() {
         for (int i = 0; i < times; i++) {
             super.run();
         }

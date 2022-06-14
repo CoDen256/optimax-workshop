@@ -8,7 +8,6 @@ import optimax.game.core.matcher.MatchResult;
  * @since 1.0
  */
 public interface Guesser {
-
     Word nextGuess();
 
     void match(Word guess, MatchResult result);

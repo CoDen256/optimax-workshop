@@ -4,8 +4,11 @@ import java.util.Collection;
 import java.util.Set;
 import optimax.game.core.Word;
 import optimax.game.core.WordleGame;
+import optimax.game.core.accepter.WordAccepter;
+import optimax.game.guesser.RandomGuesser;
 import optimax.game.run.DictionaryAwareGameRunner;
 import optimax.game.run.GameRunner;
+import optimax.game.run.guesser.DictionaryAwareGuesser;
 
 /**
  * @author Denys Chernyshov
@@ -14,31 +17,39 @@ import optimax.game.run.GameRunner;
 public class WordleGameApp {
 
     public static void main(String[] args) {
-        Word solution = createSolution();
-        Collection<Word> dict = createDictionary(solution);
-        GameRunner runner = createRunner(solution, dict);
+        GameRunner runner = createRunner();
         runner.run();
     }
 
-    private static DictionaryAwareGameRunner createRunner(Word solution, Collection<Word> dict) {
+    private static GameRunner createRunner() {
         return new DictionaryAwareGameRunner(
-                () -> createGame(solution, dict),
-                dict,
-                () -> new GuesserImpl()
+                () -> game(),
+                dictionary(),
+                () -> guesser()
         );
     }
 
-    private static WordleGame createGame(Word solution, Collection<Word> dict) {
-        return new WordleGame(6, solution, new DictionaryAccepter(dict), new StandardMatcher());
+    private static DictionaryAwareGuesser guesser() {
+        return new RandomGuesser();
     }
 
-    private static Word createSolution() {
+    private static WordleGame game() {
+        return new WordleGame(maxAttempts(), solution(), accepter(), new StandardMatcher());
+    }
+
+    private static int maxAttempts() {
+        return 6;
+    }
+
+    private static WordAccepter accepter() {
+        return new DictionaryAccepter(dictionary());
+    }
+
+    private static Collection<Word> dictionary() {
+        return Set.of(solution(), new Word("match"));
+    }
+
+    private static Word solution() {
         return new Word("valid");
     }
-
-    private static Collection<Word> createDictionary(Word solution) {
-        return Set.of(solution, new Word("match"));
-    }
-
-
 }

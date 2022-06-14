@@ -18,23 +18,20 @@ public final class Word {
 
     public Word(String word) {
         requireNonNull(word);
-        if (word.length() != 5) {
+        if (!hasFiveLetters(word))
             throw new IllegalArgumentException(
                     String.format("Word length must be 5, but was: %d (%s)", word.length(), word));
-        }
-        for (char c : word.toCharArray()) {
-            if (!Character.isAlphabetic(c)) {
+
+        for (char c : word.toCharArray())
+            if (isNotAlphabetic(c))
                 throw new IllegalArgumentException(
                         String.format("Word must contain only alphabetic letters, but '%c' was found", c));
-            }
-        }
         this.word = word.toLowerCase();
     }
 
     public String word() {
         return word;
     }
-
 
     @Override
     public String toString() {
@@ -52,5 +49,19 @@ public final class Word {
     @Override
     public int hashCode() {
         return Objects.hash(word);
+    }
+
+    private static boolean hasFiveLetters(String word) {
+        return word.length() == 5;
+    }
+    private static boolean isNotAlphabetic(char c) {
+        return !Character.isAlphabetic(c);
+    }
+
+    public static boolean isValid(String word){
+        if (!hasFiveLetters(word)) return false;
+        for (char c : word.toCharArray())
+            if (isNotAlphabetic(c)) return false;
+        return true;
     }
 }

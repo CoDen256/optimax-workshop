@@ -39,21 +39,32 @@ public class DictionaryAwareGameRunner extends GameRunner {
 
     @Override
     protected void onCreated(WordleGame game, Guesser guesser) {
-        sout
+        System.out.printf("Worlde game has started with guesser %s%n", guesser.getClass().getSimpleName());
     }
 
     @Override
     protected void onFinished(WordleGame game, Guesser guesser) {
-
+        System.out.printf("Worlde game has ended%n");
     }
 
     @Override
     protected void onSolved(WordleGame game, Guesser guesser) {
+        System.out.printf("Worlde game was successfully solved!%n");
+    }
 
+    @Override
+    protected void onGuessExpected() {
+        System.out.println("Expecting next guess");
     }
 
     @Override
     protected void onGuessSubmitted(Word guess, MatchResult result) {
+        System.out.printf("Guess: %s - %s%n", guess, result);
+    }
 
+    @Override
+    protected boolean handleError(Exception ex) {
+        System.out.printf("Error: %s%n", ex.getMessage());
+        return false;
     }
 }
