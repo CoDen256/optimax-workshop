@@ -1,6 +1,6 @@
-package optimax.game.accepter;
+package optimax.game.core.accepter;
 
-import optimax.game.Word;
+import optimax.game.core.Word;
 
 /**
  * A {@code WordAccepter} tells whether the given word will be accepted

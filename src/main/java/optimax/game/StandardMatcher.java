@@ -1,16 +1,16 @@
-package optimax.game.matcher;
+package optimax.game;
 
 import static java.util.function.Predicate.not;
-import static optimax.game.matcher.Match.ABSENT;
-import static optimax.game.matcher.Match.CORRECT;
-import static optimax.game.matcher.Match.WRONG;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import optimax.game.Word;
+import optimax.game.core.Word;
+import optimax.game.core.matcher.Match;
+import optimax.game.core.matcher.MatchResult;
+import optimax.game.core.matcher.WordMatcher;
 
 /**
  * Represents the standard Wordle matcher, that computes a {@link MatchResult} by following rules:
@@ -35,12 +35,12 @@ public class StandardMatcher implements WordMatcher {
         List<WordCharacter> actual = indexed(actualWord.word());
         List<WordCharacter> alreadyMatched = new ArrayList<>();
 
-        Match[] matches = new Match[]{ABSENT, ABSENT, ABSENT, ABSENT, ABSENT};
+        Match[] matches = new Match[]{Match.ABSENT, Match.ABSENT, Match.ABSENT, Match.ABSENT, Match.ABSENT};
 
         for (WordCharacter actualChar : actual) {
             if (expected.contains(actualChar)) {
                 alreadyMatched.add(actualChar);
-                matches[actualChar.pos] = CORRECT;
+                matches[actualChar.pos] = Match.CORRECT;
             }
         }
 
@@ -52,7 +52,7 @@ public class StandardMatcher implements WordMatcher {
                     .findFirst()
                     .ifPresent(match -> {
                         alreadyMatched.add(match);
-                        matches[actualChar.pos] = WRONG;
+                        matches[actualChar.pos] = Match.WRONG;
                     });
         }
 

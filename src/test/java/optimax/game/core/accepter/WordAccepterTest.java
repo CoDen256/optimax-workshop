@@ -1,10 +1,10 @@
-package optimax.game.accepter;
+package optimax.game.core.accepter;
 
-import static optimax.game.TestUtilities.word;
+import static optimax.game.core.TestUtilities.word;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import optimax.game.Word;
+import optimax.game.core.Word;
 import org.junit.jupiter.api.Test;
 
 

@@ -1,4 +1,4 @@
-package optimax.game;
+package optimax.game.core;
 
 /**
  * @author Denys Chernyshov

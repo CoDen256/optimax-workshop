@@ -1,4 +1,4 @@
-package optimax.game.matcher;
+package optimax.game.core.matcher;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
-import optimax.game.matcher.Match;
-import optimax.game.matcher.MatchResult;
 import org.junit.jupiter.api.Test;
 
 /**

@@ -1,11 +1,11 @@
-package optimax.game;
+package optimax.game.core;
 
 import static com.google.common.truth.Truth.assertThat;
 import static java.util.Map.entry;
-import static optimax.game.TestUtilities.word;
-import static optimax.game.matcher.Match.ABSENT;
-import static optimax.game.matcher.Match.CORRECT;
-import static optimax.game.matcher.Match.WRONG;
+import static optimax.game.core.TestUtilities.word;
+import static optimax.game.core.matcher.Match.ABSENT;
+import static optimax.game.core.matcher.Match.CORRECT;
+import static optimax.game.core.matcher.Match.WRONG;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -17,12 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import optimax.game.accepter.DictionaryAccepter;
-import optimax.game.matcher.Match;
-import optimax.game.matcher.MatchResult;
-import optimax.game.matcher.StandardMatcher;
-import org.checkerframework.checker.units.qual.A;
-import org.checkerframework.checker.units.qual.C;
+import optimax.game.DictionaryAccepter;
+import optimax.game.StandardMatcher;
+import optimax.game.core.matcher.Match;
+import optimax.game.core.matcher.MatchResult;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -33,7 +31,7 @@ class WordleGameTest {
 
     @Test
     void createNewGame() {
-        assertDoesNotThrow(() -> new WordleGame(word("valid"), w -> true, new StandardMatcher()));
+        assertDoesNotThrow(() -> new WordleGame(1, word("valid"), w -> true, new StandardMatcher()));
     }
 
     @Test
@@ -47,6 +45,13 @@ class WordleGameTest {
     @Test
     void createNewGameWithNotAcceptedSolutionFails() {
         assertThrows(IllegalArgumentException.class, () -> new WordleGame(word("valid"), w -> false, new StandardMatcher()));
+    }
+
+    @Test
+    void createNewGameWithZeroOrNegativeAttempts() {
+        assertThrows(IllegalArgumentException.class, () -> new WordleGame(-1, word("valid"), w -> true, new StandardMatcher()));
+        assertThrows(IllegalArgumentException.class, () -> new WordleGame(0, word("valid"), w -> true, new StandardMatcher()));
+        assertThrows(IllegalArgumentException.class, () -> new WordleGame(-20, word("valid"), w -> true, new StandardMatcher()));
     }
 
 
@@ -92,7 +97,7 @@ class WordleGameTest {
         Word illegal = word("xxxxx");
         Word solution = word("valid");
         Collection<Word> accepted = Set.of(solution, word("llall"), word("dilav"));
-        WordleGame game = new WordleGame(solution, new DictionaryAccepter(accepted), new StandardMatcher());
+        WordleGame game = new WordleGame(6, solution, new DictionaryAccepter(accepted), new StandardMatcher());
         List<Map.Entry<Word, MatchResult>> guessesWithExpectedMatches = List.of(
                 entry(word("llall"), matches(WRONG, ABSENT, WRONG, ABSENT, ABSENT)),
                 entry(word("dilav"), matches(WRONG, WRONG, CORRECT, WRONG, WRONG)),

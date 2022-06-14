@@ -1,10 +1,11 @@
-package optimax.game.accepter;
+package optimax.game;
 
 import static java.util.Objects.requireNonNull;
 
 import java.util.Collection;
 import java.util.HashSet;
-import optimax.game.Word;
+import optimax.game.core.Word;
+import optimax.game.core.accepter.WordAccepter;
 
 /**
  * Represents a {@link WordAccepter} that accepts only the words from the given dictionary (a set of words)

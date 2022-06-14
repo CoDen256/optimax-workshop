@@ -1,6 +1,6 @@
-package optimax.game.matcher;
+package optimax.game.core.matcher;
 
-import optimax.game.Word;
+import optimax.game.core.Word;
 
 /**
  * The {@code WordMatcher} compares two words and computes {@link  MatchResult} based on the amount

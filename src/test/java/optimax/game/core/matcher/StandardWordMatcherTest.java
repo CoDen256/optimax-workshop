@@ -1,10 +1,9 @@
-package optimax.game.matcher;
+package optimax.game.core.matcher;
 
-import static optimax.game.TestUtilities.word;
+import static optimax.game.core.TestUtilities.word;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import optimax.game.matcher.StandardMatcher;
-import optimax.game.matcher.MatchResult;
+import optimax.game.StandardMatcher;
 import org.junit.jupiter.api.Test;
 
 /**

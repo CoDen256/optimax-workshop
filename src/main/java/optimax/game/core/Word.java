@@ -1,4 +1,4 @@
-package optimax.game;
+package optimax.game.core;
 
 import static java.util.Objects.requireNonNull;
 

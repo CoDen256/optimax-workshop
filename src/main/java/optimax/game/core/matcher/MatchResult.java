@@ -1,4 +1,4 @@
-package optimax.game.matcher;
+package optimax.game.core.matcher;
 
 import static java.util.Objects.requireNonNull;
 
@@ -6,9 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import optimax.game.core.Word;
 
 /**
- * Represents a {@code MatchResult}, containing 5 {@link Match}es for each letter in the {@link optimax.game.Word}
+ * Represents a {@code MatchResult}, containing 5 {@link Match}es for each letter in the {@link Word}
  *
  * @author Denys Chernyshov
  * @since 1.0

@@ -1,4 +1,4 @@
-package optimax.game.matcher;
+package optimax.game.core.matcher;
 
 /**
  * @author Denys Chernyshov

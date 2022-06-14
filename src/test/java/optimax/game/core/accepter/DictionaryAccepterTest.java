@@ -1,12 +1,13 @@
-package optimax.game.accepter;
+package optimax.game.core.accepter;
 
-import static optimax.game.TestUtilities.word;
+import static optimax.game.core.TestUtilities.word;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Set;
+import optimax.game.DictionaryAccepter;
 import org.junit.jupiter.api.Test;
 
 /**

@@ -1,4 +1,4 @@
-package optimax.game;
+package optimax.game.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
