@@ -1,8 +1,6 @@
 package optimax.workshop.runner;
 
 import optimax.workshop.core.Word;
-import optimax.workshop.core.dictionary.WordAccepter;
-import optimax.workshop.core.dictionary.WordSource;
 import optimax.workshop.core.matcher.MatchResult;
 
 /**

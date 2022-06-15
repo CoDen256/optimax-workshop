@@ -1,10 +1,12 @@
 package optimax.workshop.core;
 
+import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Represents a valid 5-letter Wordle word, that contains only alphabetic characters.
@@ -15,27 +17,47 @@ import java.util.stream.Collectors;
 public final class Word {
 
     private final String word;
+    private final List<Letter> letters = new ArrayList<>();
 
-    public Word(String word) {
+    public Word(String input) {
+        verifyWord(input);
+        word = input.toLowerCase();
+        for (int i = 0; i < word.length(); i++) {
+            char c = this.word.charAt(i);
+            verifyLetter(c, i);
+            letters.add(new Letter(c, i));
+        }
+    }
+
+    private void verifyWord(String word) {
         requireNonNull(word);
-        if (!hasFiveLetters(word))
-            throw new IllegalArgumentException(
-                    String.format("Word length must be 5, but was: %d (%s)", word.length(), word));
 
-        for (char c : word.toCharArray())
-            if (isNotAlphabetic(c))
-                throw new IllegalArgumentException(
-                        String.format("Word must contain only alphabetic letters, but '%c' was found", c));
-        this.word = word.toLowerCase();
+        if (isNotFiveLetterWord(word))
+            throw new IllegalArgumentException(
+                    format("Word length must be 5, but was: %d (%s)", word.length(), word));
+    }
+
+    private void verifyLetter(char c, int i) {
+        if (isInvalidLetter(c))
+            throw new IllegalArgumentException(
+                    format("Letter '%s' is not alphabetic in word <%s> at position %d", c, this.word, i));
     }
 
     public String word() {
         return word;
     }
 
+    public char letter(int index) {
+        return letters.get(index).getChar();
+    }
+
+    public List<Letter> letters() {
+        return Collections.unmodifiableList(letters);
+    }
+
     @Override
     public String toString() {
-        return Arrays.stream(word.split("")).collect(Collectors.joining(",", "<", ">"));
+        return String.format("<%s>", word);
     }
 
     @Override
@@ -51,17 +73,19 @@ public final class Word {
         return Objects.hash(word);
     }
 
-    private static boolean hasFiveLetters(String word) {
-        return word.length() == 5;
+    private static boolean isNotFiveLetterWord(String word) {
+        return word.length() != 5;
     }
-    private static boolean isNotAlphabetic(char c) {
+
+    public static boolean isInvalidLetter(char c) {
         return !Character.isAlphabetic(c);
     }
 
-    public static boolean isValid(String word){
-        if (word == null || !hasFiveLetters(word)) return false;
+    public static boolean isValid(String word) {
+        if (word == null || isNotFiveLetterWord(word)) return false;
         for (char c : word.toCharArray())
-            if (isNotAlphabetic(c)) return false;
+            if (isInvalidLetter(c))
+                return false;
         return true;
     }
 }

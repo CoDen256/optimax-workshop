@@ -1,10 +1,10 @@
 package optimax.workshop;
 
 import optimax.workshop.core.Word;
-import optimax.workshop.core.dictionary.WordAccepter;
-import optimax.workshop.core.dictionary.WordSource;
 import optimax.workshop.core.matcher.MatchResult;
 import optimax.workshop.runner.Guesser;
+import optimax.workshop.runner.WordAccepter;
+import optimax.workshop.runner.WordSource;
 
 public class GuesserImpl implements Guesser {
 

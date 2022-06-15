@@ -3,13 +3,14 @@ package optimax.workshop.config.matcher;
 import static java.util.function.Predicate.not;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import optimax.workshop.core.Letter;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.matcher.Match;
 import optimax.workshop.core.matcher.MatchResult;
+import optimax.workshop.core.matcher.MatchType;
 import optimax.workshop.core.matcher.WordMatcher;
 
 /**
@@ -31,66 +32,38 @@ import optimax.workshop.core.matcher.WordMatcher;
 public class StandardMatcher implements WordMatcher {
     @Override
     public MatchResult match(Word expectedWord, Word actualWord) {
-        List<WordCharacter> expected = indexed(expectedWord.word());
-        List<WordCharacter> actual = indexed(actualWord.word());
-        List<WordCharacter> alreadyMatched = new ArrayList<>();
+        List<Letter> expected = expectedWord.letters();
+        List<Letter> actual = actualWord.letters();
+        List<Letter> alreadyMatched = new ArrayList<>();
 
-        Match[] matches = new Match[]{Match.ABSENT, Match.ABSENT, Match.ABSENT, Match.ABSENT, Match.ABSENT};
+        List<Match> matches = new ArrayList<>();
+        actual.forEach(l ->
+                matches.add(new Match(MatchType.ABSENT, l.getPos(), l.getChar()))
+        );
 
-        for (WordCharacter actualChar : actual) {
-            if (expected.contains(actualChar)) {
-                alreadyMatched.add(actualChar);
-                matches[actualChar.pos] = Match.CORRECT;
+        for (Letter actualLetter : actual) {
+            if (expected.contains(actualLetter)) {
+                alreadyMatched.add(actualLetter);
+                matches.set(actualLetter.getPos(), new Match(MatchType.CORRECT, actualLetter.getPos(), actualLetter.getChar()));
             }
         }
 
-        for (WordCharacter actualChar : actual) {
-            if (alreadyMatched.contains(actualChar)) continue;
+        for (Letter actualLetter : actual) {
+            if (alreadyMatched.contains(actualLetter)) continue;
             expected.stream()
                     .filter(not(alreadyMatched::contains))
-                    .filter(expectedChar -> isAtWrongPosition(actualChar, expectedChar))
+                    .filter(expectedChar -> isAtWrongPosition(actualLetter, expectedChar))
                     .findFirst()
                     .ifPresent(match -> {
                         alreadyMatched.add(match);
-                        matches[actualChar.pos] = Match.WRONG;
+                        matches.set(actualLetter.getPos(), new Match(MatchType.WRONG, actualLetter.getPos(), actualLetter.getChar()));
                     });
         }
-
         return new MatchResult(matches);
     }
 
-    private boolean isAtWrongPosition(WordCharacter a, WordCharacter b) {
-        return b.character == a.character && b.pos != a.pos;
+    private boolean isAtWrongPosition(Letter a, Letter b) {
+        return b.getChar() == a.getChar() && b.getPos() != a.getPos();
     }
 
-    private List<WordCharacter> indexed(String word) {
-        return IntStream.range(0, word.length())
-                .boxed()
-                .map(i -> new WordCharacter(word.charAt(i), i))
-                .collect(Collectors.toList());
-    }
-
-    private static class WordCharacter {
-
-        private final char character;
-        private final int pos;
-
-        public WordCharacter(char character, int pos) {
-            this.character = character;
-            this.pos = pos;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            WordCharacter that = (WordCharacter) o;
-            return character == that.character && pos == that.pos;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(character, pos);
-        }
-    }
 }

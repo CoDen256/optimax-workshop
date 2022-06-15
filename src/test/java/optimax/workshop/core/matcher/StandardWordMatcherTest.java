@@ -1,6 +1,6 @@
 package optimax.workshop.core.matcher;
 
-import static optimax.workshop.core.TestUtilities.word;
+import static optimax.workshop.TestUtilities.word;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import optimax.workshop.config.matcher.StandardMatcher;
@@ -174,6 +174,6 @@ class StandardWordMatcherTest {
 
     private void assertMatches(String expected, String solution, String actual) {
         MatchResult result = sut.match(word(solution), word(actual));
-        assertEquals(String.format("Result[%s]", expected), result.toString());
+        assertEquals(String.format("[%s]", expected), result.toString());
     }
 }

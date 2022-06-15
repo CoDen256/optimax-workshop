@@ -21,9 +21,18 @@ public class FileWordSource extends CollectionWordSource {
     }
 
     private static Collection<Word> load(String filename){
+        File file = createFile(filename);
+        return readFile(file);
+    }
+
+    private static File createFile(String filename) {
         File file = new File(filename);
         if (!file.exists()) throw new IllegalArgumentException(format("Unable to find file at path %s", file));
-        try (FileInputStream resource = new FileInputStream(filename)){
+        return file;
+    }
+
+    private static Collection<Word> readFile(File file) {
+        try (FileInputStream resource = new FileInputStream(file)){
             return parse(new String(resource.readAllBytes(), StandardCharsets.UTF_8));
         }catch (IOException ex){
             throw new IllegalStateException(ex);
@@ -36,8 +45,7 @@ public class FileWordSource extends CollectionWordSource {
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
             if (line.isBlank()) continue;
-            Word word = tryCreateWord(i, line);
-            words.add(word);
+            words.add(tryCreateWord(i, line));
         }
         return words;
     }

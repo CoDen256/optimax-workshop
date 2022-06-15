@@ -1,10 +1,11 @@
-package optimax.workshop.core.dictionary;
+package optimax.workshop.config.accepter;
 
-import static optimax.workshop.core.TestUtilities.word;
+import static optimax.workshop.TestUtilities.word;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import optimax.workshop.core.Word;
+import optimax.workshop.runner.WordAccepter;
 import org.junit.jupiter.api.Test;
 
 

@@ -9,10 +9,9 @@ import optimax.workshop.core.matcher.MatchResult;
  * @since 1.0
  */
 public interface GameObserver {
-    void onCreated(WordleGame game, Guesser guesser);
-    void onFinished();
-    void onSolved();
+    void onCreated(WordleGame game, Guesser guesser, WordAccepter accepter);
+    void onFinished(boolean solved);
     void onGuessExpected();
     void onGuessSubmitted(Word guess, MatchResult result);
-    void onFailedGuess(Exception ex);
+    void onGuessRejected(Word guess);
 }

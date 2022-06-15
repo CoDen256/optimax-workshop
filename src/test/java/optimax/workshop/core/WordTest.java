@@ -1,8 +1,11 @@
 package optimax.workshop.core;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -85,9 +88,56 @@ class WordTest {
     }
 
     @Test
-    void word_string_represents_word() {
-        assertEquals("<a,b,c,d,e>", new Word("abcde").toString());
-        assertEquals("<v,a,l,i,d>", new Word("VALID").toString());
-        assertEquals("<x,x,x,x,x>", new Word("xxxxx").toString());
+    void wordStringRepresentsWord() {
+        assertEquals("<abcde>", new Word("abcde").toString());
+        assertEquals("<valid>", new Word("VALID").toString());
+        assertEquals("<xxxxx>", new Word("xxxxx").toString());
     }
+
+    @Test
+    void letter() {
+        Word word = new Word("aBcDV");
+        assertEquals('a', word.letter(0));
+        assertEquals('b', word.letter(1));
+        assertEquals('c', word.letter(2));
+        assertEquals('d', word.letter(3));
+        assertEquals('v', word.letter(4));
+    }
+
+
+    @Test
+    void letters() {
+        assertThat(new Word("aBcDV").letters()).containsExactly(
+                new Letter('a', 0),
+                new Letter('b', 1),
+                new Letter('c', 2),
+                new Letter('d', 3),
+                new Letter('v', 4)
+        ).inOrder();
+        assertThat(new Word("PQIWU").letters()).containsExactly(
+                new Letter('p', 0),
+                new Letter('q', 1),
+                new Letter('i', 2),
+                new Letter('w', 3),
+                new Letter('u', 4)
+        ).inOrder();
+    }
+
+    @Test
+    void wordIsValid() {
+        assertTrue(Word.isValid("asdfg"));
+        assertTrue(Word.isValid("ASDFg"));
+        assertTrue(Word.isValid("AAAAA"));
+        assertTrue(Word.isValid("xxxxx"));
+        assertTrue(Word.isValid("AxXaX"));
+        assertFalse(Word.isValid("AxXaXaX"));
+        assertFalse(Word.isValid(""));
+        assertFalse(Word.isValid(" "));
+        assertFalse(Word.isValid("12"));
+        assertFalse(Word.isValid("12345"));
+        assertFalse(Word.isValid("12345"));
+        assertFalse(Word.isValid("%%%%%"));
+        assertFalse(Word.isValid("     "));
+    }
+
 }

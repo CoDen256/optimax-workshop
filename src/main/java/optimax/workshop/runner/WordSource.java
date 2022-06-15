@@ -1,4 +1,4 @@
-package optimax.workshop.core.dictionary;
+package optimax.workshop.runner;
 
 import java.util.Collection;
 import optimax.workshop.core.Word;

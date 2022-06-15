@@ -3,8 +3,8 @@ package optimax.workshop.config.accepter;
 import java.util.Collection;
 import java.util.HashSet;
 import optimax.workshop.core.Word;
-import optimax.workshop.core.dictionary.WordAccepter;
-import optimax.workshop.core.dictionary.WordSource;
+import optimax.workshop.runner.WordAccepter;
+import optimax.workshop.runner.WordSource;
 
 /**
  * @author Denys Chernyshov

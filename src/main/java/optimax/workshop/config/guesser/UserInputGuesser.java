@@ -2,10 +2,10 @@ package optimax.workshop.config.guesser;
 
 import java.util.Scanner;
 import optimax.workshop.core.Word;
-import optimax.workshop.core.dictionary.WordAccepter;
-import optimax.workshop.core.dictionary.WordSource;
 import optimax.workshop.core.matcher.MatchResult;
 import optimax.workshop.runner.Guesser;
+import optimax.workshop.runner.WordAccepter;
+import optimax.workshop.runner.WordSource;
 
 /**
  * @author Denys Chernyshov
@@ -21,7 +21,6 @@ public class UserInputGuesser implements Guesser {
         scanner = new Scanner(System.in);
     }
 
-
     @Override
     public void init(WordSource source, WordAccepter accepter) {
         this.accepter = accepter;
@@ -36,9 +35,11 @@ public class UserInputGuesser implements Guesser {
             word = scanner.nextLine();
             if (!Word.isValid(word)){
                 System.out.printf("Word %s is invalid%n", word);
-            }else if (accepter.isNotAccepted(new Word(word))){
-                System.out.printf("Word %s is not accepted%n", word);
-            }else {
+            }
+//            else if (accepter.isNotAccepted(new Word(word))){
+//                System.out.printf("Word %s is not accepted%n", word);
+//            }
+            else {
                 validGuess = true;
             }
         } while (!validGuess);

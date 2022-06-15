@@ -1,7 +1,7 @@
 package optimax.workshop.core;
 
 import static com.google.common.truth.Truth.assertThat;
-import static optimax.workshop.core.TestUtilities.word;
+import static optimax.workshop.TestUtilities.word;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,7 +22,7 @@ class WordleGameSubmittingTest {
 
     @BeforeEach
     void setUp() {
-        game = new WordleGame(6, SOLUTION, w -> true, new StandardMatcher());
+        game = new WordleGame(6, SOLUTION, new StandardMatcher());
     }
 
     @Test

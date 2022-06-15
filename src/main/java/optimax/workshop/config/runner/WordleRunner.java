@@ -1,41 +1,50 @@
 package optimax.workshop.config.runner;
 
-import java.util.function.Supplier;
+import optimax.workshop.core.Word;
 import optimax.workshop.core.WordleGame;
+import optimax.workshop.core.matcher.MatchResult;
 import optimax.workshop.runner.GameObserver;
+import optimax.workshop.runner.GameRunner;
 import optimax.workshop.runner.Guesser;
+import optimax.workshop.runner.WordAccepter;
 
 /**
  * @author Denys Chernyshov
  * @since 1.0
  */
-public class WordleRunner extends BaseGameRunner{
+public class WordleRunner implements GameRunner {
 
-    private final Supplier<WordleGame> gameSupplier;
-    private final Supplier<GameObserver> observerSupplier;
-    private final Supplier<Guesser> guesserSupplier;
+    private final WordleGame game;
+    private final GameObserver observer;
+    private final Guesser guesser;
+    private final WordAccepter accepter;
 
-    public WordleRunner(Supplier<WordleGame> gameSupplier,
-                                  Supplier<GameObserver> observerSupplier,
-                                  Supplier<Guesser> guesserSupplier) {
-        this.gameSupplier = gameSupplier;
-        this.observerSupplier = observerSupplier;
-        this.guesserSupplier = guesserSupplier;
+    public WordleRunner(WordleGame game, GameObserver observer, Guesser guesser, WordAccepter accepter) {
+        this.game = game;
+        this.observer = observer;
+        this.guesser = guesser;
+        this.accepter = accepter;
 
     }
-    @Override
-    protected WordleGame createGame() {
-        return gameSupplier.get();
+
+    public void run(){
+        observer.onCreated(game, guesser, accepter);
+        while(!game.isFinished()){
+            nextGuess();
+        }
+        observer.onFinished(game.isSolved());
     }
 
-    @Override
-    protected Guesser createGuesser() {
-        return guesserSupplier.get();
-    }
 
-    @Override
-    protected GameObserver createObserver() {
-        return observerSupplier.get();
+    private void nextGuess() {
+        observer.onGuessExpected();
+        Word guess = guesser.nextGuess();
+        if (accepter.isNotAccepted(guess)){
+            observer.onGuessRejected(guess);
+            return;
+        }
+        MatchResult result = game.submit(guess);
+        guesser.match(guess, result);
+        observer.onGuessSubmitted(guess, result);
     }
-
 }

@@ -1,14 +1,13 @@
-package optimax.workshop.core.dictionary;
+package optimax.workshop.config.source;
 
 import static com.google.common.truth.Truth.assertThat;
-import static optimax.workshop.core.TestUtilities.word;
+import static optimax.workshop.TestUtilities.word;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
-import optimax.workshop.config.source.FileWordSource;
 import optimax.workshop.core.Word;
 import org.junit.jupiter.api.Test;
 
@@ -26,14 +25,14 @@ class FileSourceDictionaryTest {
                 word("appol"),
                 word("valid")
         );
-        FileWordSource dict = getDictionary("/words.txt");
+        FileWordSource dict = getFileSource("/words.txt");
 
         assertThat(dict.getAll()).containsExactlyElementsIn(expected);
     }
 
     @Test
     void readWholeSet() {
-        FileWordSource dict = getDictionary("/words-full.txt");
+        FileWordSource dict = getFileSource("/words-full.txt");
 
         assertEquals(5757, dict.getAll().size());
     }
@@ -46,7 +45,7 @@ class FileSourceDictionaryTest {
                 word("appol"),
                 word("valid")
         );
-        FileWordSource dict = getDictionary("/words-spaces.txt");
+        FileWordSource dict = getFileSource("/words-spaces.txt");
         assertThat(dict.getAll()).containsExactlyElementsIn(expected);
     }
 
@@ -65,7 +64,7 @@ class FileSourceDictionaryTest {
         assertThrows(IllegalArgumentException.class, () -> new FileWordSource("/words-invalid.txt"));
     }
 
-    private FileWordSource getDictionary(String name) {
+    private FileWordSource getFileSource(String name) {
         return new FileWordSource(FileSourceDictionaryTest.class.getResource(name).getPath());
     }
 }
