@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import optimax.workshop.config.accepter.WordSourceAccepter;
 import optimax.workshop.config.generator.WordSourceSolutionGenerator;
 import optimax.workshop.config.guesser.RegexBasedGuesser;
+import optimax.workshop.config.guesser.SimpleGuesser;
 import optimax.workshop.config.matcher.StandardMatcher;
 import optimax.workshop.config.observer.AggregatedObserver;
 import optimax.workshop.config.observer.ConsoleMinimalPrinter;
@@ -48,7 +49,7 @@ public class WordleGameApp {
         WordAccepter accepter = new WordSourceAccepter(source);
         SolutionGenerator generator = new WordSourceSolutionGenerator(source);
 
-        Supplier<Guesser> guesser = () -> new RegexBasedGuesser();
+        Supplier<Guesser> guesser = () -> new SimpleGuesser();
 
         WordMatcher matcher = new StandardMatcher();
         GameObserver observer = new AggregatedObserver(List.of(

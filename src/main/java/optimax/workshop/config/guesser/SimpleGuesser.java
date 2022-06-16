@@ -5,8 +5,12 @@ import static optimax.workshop.core.matcher.MatchType.CORRECT;
 import static optimax.workshop.core.matcher.MatchType.WRONG;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import optimax.workshop.core.Letter;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.matcher.Match;
 import optimax.workshop.core.matcher.MatchResult;
@@ -19,7 +23,7 @@ public class SimpleGuesser implements Guesser {
     private List<Word> words;
     private List<Word> submitted = new ArrayList<>();
     private WordAccepter accepter;
-    private List<Match> matches = new ArrayList<>();
+    private Set<Match> matches = new HashSet<>();
 
     private Word fallback;
 
@@ -32,8 +36,8 @@ public class SimpleGuesser implements Guesser {
 
     @Override
     public Word nextGuess() {
-        words.removeIf(Predicate.not(filterMatches()));
-        return words.isEmpty() ? fallback : words.get(0);
+        List<Word> guesses = this.words.stream().filter(matchesCriteria()).collect(Collectors.toList());
+        return guesses.isEmpty() ? fallback : guesses.get(0);
     }
 
     @Override
@@ -42,30 +46,28 @@ public class SimpleGuesser implements Guesser {
         matches.addAll(result.getMatches());
     }
 
-    private Predicate<Word> filterMatches(){
+    private Predicate<Word> matchesCriteria(){
         return word -> {
             for (Match match : matches) {
-                if (match.getType() == ABSENT){
-                    if (word.word().contains(Character.toString(match.getLetter()))){
-                        return false;
-                    }
+                char letter = match.getLetter();
+                int pos = match.getPos();
+                if (match.getType() == ABSENT && wordContainsLetter(word, letter)){
+                    return false;
                 }
 
-                if (match.getType() == CORRECT){
-                    if (word.word().charAt(match.getPos()) != match.getLetter()){
-                        return false;
-                    }
+                if (match.getType() == CORRECT && word.letter(pos) != letter){
+                    return false;
                 }
 
-                if (match.getType() == WRONG){
-                    if (!word.word().contains(Character.toString(match.getLetter())) ||
-                            word.letter(match.getPos()) == match.getLetter()
-                    ){
-                        return false;
-                    }
+                if (match.getType() == WRONG && !(wordContainsLetter(word, letter) && word.letter(pos) != letter)){
+                    return false;
                 }
             }
             return true;
         };
+    }
+
+    private boolean wordContainsLetter(Word word, char letter) {
+        return word.letters().stream().map(Letter::getChar).anyMatch(c -> c == letter);
     }
 }
