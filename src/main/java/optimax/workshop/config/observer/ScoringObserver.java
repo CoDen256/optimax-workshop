@@ -34,7 +34,7 @@ public class ScoringObserver implements GameObserver {
         }else {
             lost ++;
         }
-        System.out.printf("[Scorer] Games: %d, Solved/Lost: %d/%d%n", count, won, lost);
+        System.out.printf("[Scorer] Games: %d, Solved/Lost: %d/%d, Rate: %f%%%n", count, won, lost, count == 0? 0: (float)won/count*100);
     }
 
     @Override

@@ -32,11 +32,11 @@ public class ConsoleMinimalPrinter implements GameObserver {
     @Override
     public void onFinished(boolean solved) {
         print("{wGame #%d} ", count);
-        print(solved ?  "{gSolved!}" : "{rFailed!}");
-        print(" ");
-        print(formatResult( t -> getMatchColor(t).toLowerCase(), "%c", result));
-        print(":");
-        println(formatWord("%c", solution, "{w", "}"));
+        println(solved ?  "{gSolved!}" : "{rFailed!}");
+//        print(" ");
+//        print(formatResult( t -> getMatchColor(t).toLowerCase(), "%c", result));
+//        print(":");
+//        println(formatWord("%c", solution, "{w", "}"));
     }
 
     @Override

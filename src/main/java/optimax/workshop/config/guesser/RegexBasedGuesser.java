@@ -88,30 +88,21 @@ public class RegexBasedGuesser implements Guesser {
     }
 
     private void updateRegexWithCorrect(int pos, char currentChar) {
-        regexList.set(pos, String.valueOf(currentChar));
-
+        updateRegexForLetterAtPos(pos, s -> String.valueOf(currentChar));
         presentLetters.add(currentChar);
     }
 
     private void updateRegexWithWrong(int pos, char currentChar) {
-        String currRegex = regexList.get(pos);
-        String updatedRegex = currRegex.replace(currentChar, '\0');
-        regexList.set(pos, updatedRegex);
-
+        updateRegexForLetterAtPos(pos, s -> removeChar(s, currentChar));
         presentLetters.add(currentChar);
     }
 
     private void updateRegexWithAbsent(int pos, char currentChar) {
         if (presentLetters.contains(currentChar)) {
-            String currRegex = regexList.get(pos);
-            String updatedRegex = currRegex.replace(currentChar, '\0');
-            regexList.set(pos, updatedRegex);
+            updateRegexForLetterAtPos(pos, s -> removeChar(s, currentChar));
         } else {
-            // Remove current character from all regex
             for (int regexIndex = 0; regexIndex < 5; regexIndex++) {
-                String currRegex = regexList.get(regexIndex);
-                String updatedRegex = currRegex.replace(currentChar, '\0');
-                regexList.set(regexIndex, updatedRegex);
+                updateRegexForLetterAtPos(regexIndex, s -> removeChar(s, currentChar));
             }
         }
     }

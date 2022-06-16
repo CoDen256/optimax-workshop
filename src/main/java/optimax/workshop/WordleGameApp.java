@@ -10,6 +10,7 @@ import optimax.workshop.config.generator.WordSourceSolutionGenerator;
 import optimax.workshop.config.guesser.RegexBasedGuesser;
 import optimax.workshop.config.matcher.StandardMatcher;
 import optimax.workshop.config.observer.AggregatedObserver;
+import optimax.workshop.config.observer.ConsoleMinimalPrinter;
 import optimax.workshop.config.observer.ConsolePrettyPrinter;
 import optimax.workshop.config.observer.ScoringObserver;
 import optimax.workshop.config.runner.RepeatedRunner;
@@ -51,7 +52,7 @@ public class WordleGameApp {
 
         WordMatcher matcher = new StandardMatcher();
         GameObserver observer = new AggregatedObserver(List.of(
-                new ConsolePrettyPrinter()
+                new ConsoleMinimalPrinter()
                 ,new ScoringObserver()
         ));
 
