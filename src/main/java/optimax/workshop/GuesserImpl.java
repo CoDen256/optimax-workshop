@@ -1,15 +1,14 @@
 package optimax.workshop;
 
+import java.util.Collection;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.matcher.MatchResult;
 import optimax.workshop.runner.Guesser;
-import optimax.workshop.runner.WordAccepter;
-import optimax.workshop.runner.WordSource;
 
 public class GuesserImpl implements Guesser {
 
     @Override
-    public void init(WordSource source, WordAccepter accepter) {
+    public void init(Collection<Word> solutions, Collection<Word> accepted) {
 
     }
 

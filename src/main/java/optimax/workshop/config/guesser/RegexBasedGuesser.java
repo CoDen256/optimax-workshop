@@ -1,6 +1,7 @@
 package optimax.workshop.config.guesser;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.function.UnaryOperator;
@@ -31,8 +32,8 @@ public class RegexBasedGuesser implements Guesser {
     private final Random random = new Random();
 
     @Override
-    public void init(WordSource source, WordAccepter accepter) {
-        wordList.addAll(source.getAll().stream().map(Word::word).collect(Collectors.toList()));
+    public void init(Collection<Word> solutions, Collection<Word> accepted) {
+        wordList.addAll(solutions.stream().map(Word::word).collect(Collectors.toList()));
     }
 
     @Override
@@ -68,9 +69,6 @@ public class RegexBasedGuesser implements Guesser {
         return presentLetters.stream().allMatch(l -> currentWord.contains(l.toString()));
     }
 
-    /**
-     * Updates regex based on the feedback.
-     */
     private void updateRegex(MatchResult feedback) {
         for (Match match : feedback.getMatches()) {
             int pos = match.getPos();

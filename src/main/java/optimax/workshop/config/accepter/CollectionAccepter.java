@@ -4,17 +4,16 @@ import java.util.Collection;
 import java.util.HashSet;
 import optimax.workshop.core.Word;
 import optimax.workshop.runner.WordAccepter;
-import optimax.workshop.runner.WordSource;
 
 /**
  * @author Denys Chernyshov
  * @since 1.0
  */
-public class WordSourceAccepter implements WordAccepter {
+public class CollectionAccepter implements WordAccepter {
     private final Collection<Word> source;
 
-    public WordSourceAccepter(WordSource source) {
-        this.source = new HashSet<>(source.getAll());
+    public CollectionAccepter(Collection<Word> source) {
+        this.source = new HashSet<>(source);
     }
     @Override
     public boolean isAccepted(Word word) {

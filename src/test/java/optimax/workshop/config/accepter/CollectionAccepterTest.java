@@ -1,4 +1,4 @@
-package optimax.workshop.config.generator;
+package optimax.workshop.config.accepter;
 
 import static optimax.workshop.TestUtilities.generateWords;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -12,16 +12,14 @@ import org.junit.jupiter.api.Test;
  * @author Denys Chernyshov
  * @since 1.0
  */
-class WordSourceSolutionGeneratorTest {
-
+class CollectionAccepterTest {
     @Test
-    void generateNextSolution() {
+    void acceptFromWordSource() {
         Collection<Word> source = generateWords(50).collect(Collectors.toList());
-        WordSourceSolutionGenerator sut = new WordSourceSolutionGenerator(() -> source);
+        CollectionAccepter sut = new CollectionAccepter(source);
 
-        for (int i = 0; i < 50; i++) {
-            Word word = sut.nextSolution();
-            assertTrue(source.contains(word));
+        for (Word word : source) {
+            assertTrue(sut.isAccepted(word));
         }
     }
 }

@@ -1,15 +1,15 @@
 package optimax.workshop.config.guesser;
 
+import java.util.Collection;
 import optimax.workshop.config.generator.RandomLetterSolutionGenerator;
-import optimax.workshop.config.generator.WordSourceSolutionGenerator;
+import optimax.workshop.config.generator.CollectionSolutionGenerator;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.matcher.MatchResult;
 import optimax.workshop.runner.Guesser;
 import optimax.workshop.runner.SolutionGenerator;
-import optimax.workshop.runner.WordAccepter;
-import optimax.workshop.runner.WordSource;
 
 /**
+ * The {@code RandomGuesser} makes guesses randomly. If the given word source is empty
  * @author Denys Chernyshov
  * @since 1.0
  */
@@ -17,11 +17,11 @@ public class RandomGuesser implements Guesser {
     private SolutionGenerator generator;
 
     @Override
-    public void init(WordSource source, WordAccepter accepter) {
-        if (source.getAll().isEmpty()){
+    public void init(Collection<Word> solutions, Collection<Word> accepted) {
+        if (solutions.isEmpty()){
             generator = new RandomLetterSolutionGenerator();
         }else {
-            generator = new WordSourceSolutionGenerator(source);
+            generator = new CollectionSolutionGenerator(solutions);
         }
     }
 
@@ -31,7 +31,5 @@ public class RandomGuesser implements Guesser {
     }
 
     @Override
-    public void match(Word guess, MatchResult result) {
-        // ignore
-    }
+    public void match(Word guess, MatchResult result) {/* ignore */}
 }

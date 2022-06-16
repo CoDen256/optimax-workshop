@@ -1,4 +1,4 @@
-package optimax.workshop.config.source;
+package optimax.workshop.config;
 
 import static java.lang.String.format;
 
@@ -14,18 +14,15 @@ import optimax.workshop.core.Word;
  * @author Denys Chernyshov
  * @since 1.0
  */
-public class FileWordSource extends CollectionWordSource {
+public final class FileWordLoader {
 
-    public FileWordSource(String path) {
-        super(load(path));
+    private FileWordLoader() {}
+
+    public static Collection<Word> load(String filename){
+        return readFile(getFile(filename));
     }
 
-    private static Collection<Word> load(String filename){
-        File file = createFile(filename);
-        return readFile(file);
-    }
-
-    private static File createFile(String filename) {
+    private static File getFile(String filename) {
         File file = new File(filename);
         if (!file.exists()) throw new IllegalArgumentException(format("Unable to find file at path %s", file));
         return file;

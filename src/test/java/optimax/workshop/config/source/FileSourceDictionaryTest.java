@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
+import optimax.workshop.config.FileWordLoader;
 import optimax.workshop.core.Word;
 import org.junit.jupiter.api.Test;
 
@@ -25,16 +26,14 @@ class FileSourceDictionaryTest {
                 word("appol"),
                 word("valid")
         );
-        FileWordSource dict = getFileSource("/words.txt");
 
-        assertThat(dict.getAll()).containsExactlyElementsIn(expected);
+        assertThat(FileWordLoader.load(getFileSource("/words.txt"))).containsExactlyElementsIn(expected);
     }
 
     @Test
     void readWholeSet() {
-        FileWordSource dict = getFileSource("/words-full.txt");
 
-        assertEquals(5757, dict.getAll().size());
+        assertEquals(5757, FileWordLoader.load(getFileSource("/words-full.txt")).size());
     }
 
     @Test
@@ -45,26 +44,25 @@ class FileSourceDictionaryTest {
                 word("appol"),
                 word("valid")
         );
-        FileWordSource dict = getFileSource("/words-spaces.txt");
-        assertThat(dict.getAll()).containsExactlyElementsIn(expected);
+        assertThat(FileWordLoader.load(getFileSource("/words-spaces.txt"))).containsExactlyElementsIn(expected);
     }
 
     @Test
     void failAtNullPath() {
-        assertThrows(NullPointerException.class, () -> new FileWordSource(null));
+        assertThrows(NullPointerException.class, () ->  FileWordLoader.load(null));
     }
 
     @Test
     void failAtNonExistingPath() {
-        assertThrows(IllegalArgumentException.class, () -> new FileWordSource(UUID.randomUUID().toString()));
+        assertThrows(IllegalArgumentException.class, () ->  FileWordLoader.load(UUID.randomUUID().toString()));
     }
 
     @Test
     void failAtInvalidWords() {
-        assertThrows(IllegalArgumentException.class, () -> new FileWordSource("/words-invalid.txt"));
+        assertThrows(IllegalArgumentException.class, () ->  FileWordLoader.load("/words-invalid.txt"));
     }
 
-    private FileWordSource getFileSource(String name) {
-        return new FileWordSource(FileSourceDictionaryTest.class.getResource(name).getPath());
+    private String getFileSource(String name) {
+        return FileSourceDictionaryTest.class.getResource(name).getPath();
     }
 }

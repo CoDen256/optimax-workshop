@@ -27,7 +27,7 @@ public class ConsolePrettyPrinter implements GameObserver {
     private WordleGame game;
 
     @Override
-    public void onCreated(WordleGame game, Guesser guesser, WordAccepter accepter) {
+    public void onCreated(WordleGame game, Word solution, Guesser guesser, WordAccepter accepter) {
         guessCount = 0;
         results.clear();
         println(repeated("-", 30, "\n{w", "}"));

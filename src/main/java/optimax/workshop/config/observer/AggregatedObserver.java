@@ -21,31 +21,27 @@ public class AggregatedObserver implements GameObserver {
     }
 
     @Override
-    public void onCreated(WordleGame game, Guesser guesser, WordAccepter accepter) {
-        observers.forEach(o -> o.onCreated(game, guesser, accepter));
+    public void onCreated(WordleGame game, Word solution, Guesser guesser, WordAccepter accepter) {
+        observers.forEach(o -> o.onCreated(game, solution, guesser, accepter));
     }
 
     @Override
     public void onFinished(boolean solved) {
         observers.forEach(o -> o.onFinished(solved));
-
     }
 
     @Override
     public void onGuessExpected() {
         observers.forEach(o -> o.onGuessExpected());
-
     }
 
     @Override
     public void onGuessSubmitted(Word guess, MatchResult result) {
         observers.forEach(o -> o.onGuessSubmitted(guess, result));
-
     }
 
     @Override
     public void onGuessRejected(Word guess) {
         observers.forEach(o -> o.onGuessRejected(guess));
-
     }
 }

@@ -5,6 +5,7 @@ import static optimax.workshop.core.matcher.MatchType.CORRECT;
 import static optimax.workshop.core.matcher.MatchType.WRONG;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,28 +16,24 @@ import optimax.workshop.core.Word;
 import optimax.workshop.core.matcher.Match;
 import optimax.workshop.core.matcher.MatchResult;
 import optimax.workshop.runner.Guesser;
-import optimax.workshop.runner.WordAccepter;
-import optimax.workshop.runner.WordSource;
 
 public class SimpleGuesser implements Guesser {
 
-    private List<Word> words;
+    private List<Word> solutions;
     private List<Word> submitted = new ArrayList<>();
-    private WordAccepter accepter;
     private Set<Match> matches = new HashSet<>();
 
     private Word fallback;
 
     @Override
-    public void init(WordSource source, WordAccepter accepter) {
-        words = new ArrayList<>(source.getAll());
-        this.accepter = accepter;
-        fallback = words.get(0);
+    public void init(Collection<Word> solutions, Collection<Word> accepted) {
+        this.solutions = new ArrayList<>(solutions);
+        fallback = this.solutions.get(0);
     }
 
     @Override
     public Word nextGuess() {
-        List<Word> guesses = this.words.stream().filter(matchesCriteria()).collect(Collectors.toList());
+        List<Word> guesses = this.solutions.stream().filter(matchesCriteria()).collect(Collectors.toList());
         return guesses.isEmpty() ? fallback : guesses.get(0);
     }
 

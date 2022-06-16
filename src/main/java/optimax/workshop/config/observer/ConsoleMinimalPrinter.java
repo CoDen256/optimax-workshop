@@ -24,7 +24,7 @@ public class ConsoleMinimalPrinter implements GameObserver {
     private int count = 0;
 
     @Override
-    public void onCreated(WordleGame game, Guesser guesser, WordAccepter accepter) {
+    public void onCreated(WordleGame game, Word solution, Guesser guesser, WordAccepter accepter) {
         solution = game.getSolution();
         count++;
     }

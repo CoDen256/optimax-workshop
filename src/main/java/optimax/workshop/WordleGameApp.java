@@ -1,77 +1,50 @@
 package optimax.workshop;
 
-import static java.lang.String.format;
-
-import java.util.List;
-import java.util.function.IntPredicate;
-import java.util.function.Supplier;
-import optimax.workshop.config.accepter.WordSourceAccepter;
-import optimax.workshop.config.generator.WordSourceSolutionGenerator;
+import java.util.Collection;
+import optimax.workshop.config.accepter.CollectionAccepter;
+import optimax.workshop.config.generator.CollectionSolutionGenerator;
 import optimax.workshop.config.guesser.RegexBasedGuesser;
-import optimax.workshop.config.guesser.SimpleGuesser;
 import optimax.workshop.config.matcher.StandardMatcher;
-import optimax.workshop.config.observer.AggregatedObserver;
 import optimax.workshop.config.observer.ConsoleMinimalPrinter;
-import optimax.workshop.config.observer.ConsolePrettyPrinter;
 import optimax.workshop.config.observer.ScoringObserver;
-import optimax.workshop.config.runner.RepeatedRunner;
-import optimax.workshop.config.runner.WordleRunner;
-import optimax.workshop.config.source.FileWordSource;
+import optimax.workshop.config.runner.GameRunnerBuilder;
+import optimax.workshop.config.FileWordLoader;
 import optimax.workshop.core.Word;
-import optimax.workshop.core.WordleGame;
-import optimax.workshop.core.matcher.WordMatcher;
-import optimax.workshop.runner.GameObserver;
 import optimax.workshop.runner.GameRunner;
-import optimax.workshop.runner.Guesser;
-import optimax.workshop.runner.SolutionGenerator;
-import optimax.workshop.runner.WordAccepter;
-import optimax.workshop.runner.WordSource;
 
-/**
- * @author Denys Chernyshov
- * @since 1.0
- */
 public class WordleGameApp {
 
-    private static final int MAX_ATTEMPTS = 6;
-    private static final int RUN_TIMES = 1000;
-    private static final IntPredicate RUN_CONDITION = i -> i < RUN_TIMES;
-    private static final String WORDS_SOURCE = "/words.txt";
-    private static final String WORDS_SOURCE_PATH = WordleGameApp.class.getResource(WORDS_SOURCE).getPath();
-
     public static void main(String[] args) {
-        GameRunner runner = createRunner();
-        runner.run();
+        createRunner().run();
     }
     private static GameRunner createRunner() {
-        WordSource source = new FileWordSource(WORDS_SOURCE_PATH);
-        WordSource sourceVisibleToGuesser = source;
-        WordAccepter accepter = new WordSourceAccepter(source);
-        SolutionGenerator generator = new WordSourceSolutionGenerator(source);
+        Collection<Word> solutions = FileWordLoader.load(resource("/words.txt"));
+        Collection<Word> accepted = FileWordLoader.load(resource("/words.txt"));
+        return new GameRunnerBuilder()
+                // The guesser (created each time newly for each game)
+                .guesser(() -> new RegexBasedGuesser())
 
-        Supplier<Guesser> guesser = () -> new SimpleGuesser();
+                // Solutions that are visible to guesser based on actual solutions
+                .solutionsVisibleToGuesser(solutions)
+                // Accepted words that are visible to guesser based on actual accepted words
+                .acceptedVisibleToGuesser(accepted)
 
-        WordMatcher matcher = new StandardMatcher();
-        GameObserver observer = new AggregatedObserver(List.of(
-                new ConsoleMinimalPrinter()
-                ,new ScoringObserver()
-        ));
+                // The generator of the solution for each game based on the solution set
+                .generator(new CollectionSolutionGenerator(solutions))
+                // Accepter based on the accepted words
+                .accepter(new CollectionAccepter(accepted))
 
-        return new RepeatedRunner(RUN_CONDITION, () -> {
-            Word newSolution = verify(accepter, generator.nextSolution());
+                .addObserver(new ConsoleMinimalPrinter()) // Prints only the results
+                .addObserver(new ScoringObserver())       // Prints the results and calculates
 
-            WordleGame newGame = new WordleGame(MAX_ATTEMPTS, newSolution, matcher);
+                .maxAttempts(6)                 // Max attempts per game
+                .runLimit(1000)           // Total amount of games
 
-            Guesser newGuesser = guesser.get();
-            newGuesser.init(sourceVisibleToGuesser, accepter);
-
-            return new WordleRunner(newGame, observer, newGuesser, accepter);
-        });
+                .matcher(new StandardMatcher()) // Word comparing strategy
+                .build();
     }
 
-    private static Word verify(WordAccepter accepter, Word solution){
-        if (accepter.isNotAccepted(solution))
-            throw new IllegalArgumentException(format("Solution (%s) is not accepted", solution));
-        return solution;
+    private static String resource(String resource){
+        return WordleGameApp.class.getResource(resource).getPath();
     }
 }

@@ -12,7 +12,10 @@ public class RepeatedRunner implements GameRunner {
     private final Supplier<GameRunner> runner;
     private final IntPredicate runNext;
 
-    public RepeatedRunner(IntPredicate runCondition, Supplier<GameRunner> runner) {
+    public RepeatedRunner(IntPredicate runCondition,
+                          Supplier<GameRunner> runner
+
+    ) {
         this.runner = runner;
         this.runNext = runCondition;
     }
