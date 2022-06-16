@@ -22,12 +22,13 @@ public class ScoringObserver implements GameObserver {
 
     @Override
     public void onCreated(WordleGame game, Guesser guesser, WordAccepter accepter) {
-        System.out.printf("[Scorer] Game %d started", count++);
+        count++;
+//        System.out.printf("[Scorer] Game %d started", count);
     }
 
     @Override
     public void onFinished(boolean solved) {
-        System.out.printf("[Scorer] Game %d %s%n", count, solved ? "solved" : "lost");
+//        System.out.printf("[Scorer] Game %d %s%n", count, solved ? "solved" : "lost");
         if (solved){
             won ++;
         }else {

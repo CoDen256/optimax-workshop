@@ -39,7 +39,7 @@ public class RegexBasedGuesser implements Guesser {
     public Word nextGuess() {
         return getMatches()
                 .limit(10)
-                .peek(System.out::println)
+//                .peek(System.out::println)
                 .findFirst()
                 .map(Word::new)
                 .orElse(fallback());
@@ -88,22 +88,31 @@ public class RegexBasedGuesser implements Guesser {
     }
 
     private void updateRegexWithCorrect(int pos, char currentChar) {
-        updateRegexForLetterAtPos(pos, r -> String.valueOf(currentChar));
+        regexList.set(pos, String.valueOf(currentChar));
+
         presentLetters.add(currentChar);
     }
 
     private void updateRegexWithWrong(int pos, char currentChar) {
-        updateRegexForLetterAtPos(pos, r -> removeChar(r, currentChar));
+        String currRegex = regexList.get(pos);
+        String updatedRegex = currRegex.replace(currentChar, '\0');
+        regexList.set(pos, updatedRegex);
+
         presentLetters.add(currentChar);
     }
 
     private void updateRegexWithAbsent(int pos, char currentChar) {
-        if (presentLetters.contains(currentChar)) { // already is present, thus remove char from this position
-            updateRegexForLetterAtPos(pos, r -> removeChar(r, currentChar));
-        } else { // Remove current character from all regex letters
-            regexList.forEach(l ->
-                updateRegexForLetterAtPos(pos, r -> removeChar(r, currentChar))
-            );
+        if (presentLetters.contains(currentChar)) {
+            String currRegex = regexList.get(pos);
+            String updatedRegex = currRegex.replace(currentChar, '\0');
+            regexList.set(pos, updatedRegex);
+        } else {
+            // Remove current character from all regex
+            for (int regexIndex = 0; regexIndex < 5; regexIndex++) {
+                String currRegex = regexList.get(regexIndex);
+                String updatedRegex = currRegex.replace(currentChar, '\0');
+                regexList.set(regexIndex, updatedRegex);
+            }
         }
     }
 

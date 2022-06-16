@@ -1,5 +1,7 @@
 package optimax.workshop.config.observer;
 
+import static optimax.workshop.config.observer.ConsoleUtils.formatResult;
+import static optimax.workshop.config.observer.ConsoleUtils.formatWord;
 import static optimax.workshop.config.observer.ConsoleUtils.print;
 import static optimax.workshop.config.observer.ConsoleUtils.println;
 import static optimax.workshop.config.observer.ConsoleUtils.repeated;
@@ -8,9 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.WordleGame;
-import optimax.workshop.core.matcher.Match;
 import optimax.workshop.core.matcher.MatchResult;
-import optimax.workshop.core.matcher.MatchType;
 import optimax.workshop.runner.GameObserver;
 import optimax.workshop.runner.Guesser;
 import optimax.workshop.runner.WordAccepter;
@@ -23,7 +23,7 @@ public class ConsolePrettyPrinter implements GameObserver {
 
     private int guessCount = 0;
 
-    private Collection<MatchResult> results = new ArrayList<>();
+    private final Collection<MatchResult> results = new ArrayList<>();
     private WordleGame game;
 
     @Override
@@ -31,7 +31,7 @@ public class ConsolePrettyPrinter implements GameObserver {
         guessCount = 0;
         results.clear();
         println(repeated("-", 30, "\n{w", "}"));
-        println("{w"+"Worlde game has started!}".toUpperCase());
+        println("{w" + "Worlde game has started!}".toUpperCase());
         println("Guesser: {g`%s`}", guesser.getClass().getSimpleName());
         println("Accepting by: {g`%s`}\n", accepter.getClass().getSimpleName());
         this.game = game;
@@ -50,13 +50,9 @@ public class ConsolePrettyPrinter implements GameObserver {
     }
 
     private void printResult(MatchResult result) {
-        for (Match match : result.getMatches()) {
-            print(getMatchColor(match.getType()));
-            print("{b %c ", Character.toUpperCase(match.getLetter()));
-            print("}");
-        }
-        println();
+        println(formatResult(ConsoleUtils::getMatchColor, "{b %c ", result));
     }
+
 
     @Override
     public void onGuessRejected(Word guess) {
@@ -64,13 +60,6 @@ public class ConsolePrettyPrinter implements GameObserver {
         printWord(guess, "{R{b", "}");
     }
 
-    private void printWord(Word guess, String prefix, String suffix) {
-        print(prefix);
-        for (char c : guess.word().toUpperCase().toCharArray()) {
-            print(" %c ", c);
-        }
-        println(suffix);
-    }
 
     @Override
     public void onFinished(boolean solved) {
@@ -82,16 +71,9 @@ public class ConsolePrettyPrinter implements GameObserver {
         results.forEach(this::printResult);
         println("{gSolution:");
         printWord(game.getSolution(), "{G{b", "}");
-
     }
 
-    private String getMatchColor(MatchType type) {
-        switch(type){
-            case CORRECT: return "{G";
-            case WRONG: return "{Y";
-            default:return "{W";
-        }
+    private void printWord(Word word, String prefix, String suffix) {
+        println(formatWord(" %c ", word, prefix, suffix));
     }
-
-
 }

@@ -32,7 +32,7 @@ import optimax.workshop.runner.WordSource;
 public class WordleGameApp {
 
     private static final int MAX_ATTEMPTS = 6;
-    private static final int RUN_TIMES = 100;
+    private static final int RUN_TIMES = 1000;
     private static final IntPredicate RUN_CONDITION = i -> i < RUN_TIMES;
     private static final String WORDS_SOURCE = "/words.txt";
     private static final String WORDS_SOURCE_PATH = WordleGameApp.class.getResource(WORDS_SOURCE).getPath();
@@ -51,8 +51,8 @@ public class WordleGameApp {
 
         WordMatcher matcher = new StandardMatcher();
         GameObserver observer = new AggregatedObserver(List.of(
-                new ConsolePrettyPrinter(),
-                new ScoringObserver()
+                new ConsolePrettyPrinter()
+                ,new ScoringObserver()
         ));
 
         return new RepeatedRunner(RUN_CONDITION, () -> {

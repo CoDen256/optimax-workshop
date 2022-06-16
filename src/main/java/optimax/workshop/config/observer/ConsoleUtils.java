@@ -1,7 +1,12 @@
 package optimax.workshop.config.observer;
 
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import optimax.workshop.core.Word;
+import optimax.workshop.core.matcher.Match;
+import optimax.workshop.core.matcher.MatchResult;
+import optimax.workshop.core.matcher.MatchType;
 
 /**
  * @author Denys Chernyshov
@@ -22,27 +27,27 @@ public class ConsoleUtils {
     private static final String WHITE_BG = "\033[1;107m";
     private static final String RED_BG = "\033[1;101m";
 
-    public static void print(String format, Object... params){
+    public static void print(String format, Object... params) {
         System.out.printf(pretty(format), params);
     }
 
-    public static void println(String format, Object... params){
+    public static void println(String format, Object... params) {
         print(format + "%n", params);
     }
 
-    public static void print(){
+    public static void print() {
         print("");
     }
 
-    public static void println(){
+    public static void println() {
         println("");
     }
 
-    public static String repeated(String repeated, int times){
+    public static String repeated(String repeated, int times) {
         return repeated(repeated, times, "", "");
     }
 
-    public static String repeated(String repeated, int times, String prefix, String suffix){
+    public static String repeated(String repeated, int times, String prefix, String suffix) {
         return Stream.generate(() -> repeated)
                 .limit(times)
                 .collect(Collectors.joining("", prefix, suffix));
@@ -60,6 +65,37 @@ public class ConsoleUtils {
                 .replace("{R", RED_BG)
                 .replace("}", RESET)
                 .replace("\n", "%n");
+    }
+
+    public static String getMatchColor(MatchType type) {
+        switch (type) {
+            case CORRECT:
+                return "{G";
+            case WRONG:
+                return "{Y";
+            default:
+                return "{W";
+        }
+    }
+
+    public static String formatWord(String charFormat, Word guess, String prefix, String suffix) {
+        StringBuilder sb = new StringBuilder(prefix);
+        for (char c : guess.word().toUpperCase().toCharArray()) {
+            sb.append(String.format(charFormat, c));
+        }
+        sb.append(suffix);
+        return sb.toString();
+    }
+
+    public static String formatResult(Function<MatchType, String> matchFormat, String charFormat, MatchResult result) {
+        StringBuilder sb = new StringBuilder();
+
+        for (Match match : result.getMatches()) {
+            sb.append(matchFormat.apply(match.getType()))
+                    .append(String.format(charFormat, Character.toUpperCase(match.getLetter())))
+                    .append("}");
+        }
+        return sb.toString();
     }
 
 }
