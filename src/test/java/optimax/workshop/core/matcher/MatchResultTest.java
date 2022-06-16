@@ -10,8 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
@@ -58,11 +56,11 @@ class MatchResultTest {
         MatchResult result = matchResult(
                 ABSENT, CORRECT, WRONG, CORRECT, CORRECT
         );
-        assertThrows(IllegalArgumentException.class, () -> result.getMatchType(-2));
-        assertThrows(IllegalArgumentException.class, () -> result.getMatchType(-1));
-        assertThrows(IllegalArgumentException.class, () -> result.getMatchType(5));
-        assertThrows(IllegalArgumentException.class, () -> result.getMatchType(6));
-        assertThrows(IllegalArgumentException.class, () -> result.getMatchType(12));
+        assertThrows(IllegalArgumentException.class, () -> result.matchTypeAt(-2));
+        assertThrows(IllegalArgumentException.class, () -> result.matchTypeAt(-1));
+        assertThrows(IllegalArgumentException.class, () -> result.matchTypeAt(5));
+        assertThrows(IllegalArgumentException.class, () -> result.matchTypeAt(6));
+        assertThrows(IllegalArgumentException.class, () -> result.matchTypeAt(12));
     }
 
 
@@ -72,11 +70,11 @@ class MatchResultTest {
                 ABSENT, CORRECT, WRONG, CORRECT, CORRECT
         );
 
-        assertEquals(ABSENT, result.getMatchType(0));
-        assertEquals(CORRECT, result.getMatchType(1));
-        assertEquals(WRONG, result.getMatchType(2));
-        assertEquals(CORRECT, result.getMatchType(3));
-        assertEquals(CORRECT, result.getMatchType(4));
+        assertEquals(ABSENT, result.matchTypeAt(0));
+        assertEquals(CORRECT, result.matchTypeAt(1));
+        assertEquals(WRONG, result.matchTypeAt(2));
+        assertEquals(CORRECT, result.matchTypeAt(3));
+        assertEquals(CORRECT, result.matchTypeAt(4));
     }
 
     @Test

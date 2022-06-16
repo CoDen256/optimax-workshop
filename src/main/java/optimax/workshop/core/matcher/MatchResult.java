@@ -27,9 +27,9 @@ public class MatchResult {
         this.matches = matches.stream().sorted(Comparator.comparing(Match::getPos)).collect(Collectors.toList());
     }
 
-    public MatchType getMatchType(int pos) {
+    public MatchType matchTypeAt(int pos) {
         if (!(pos >= 0 && pos < 5)) {
-            throw new IllegalArgumentException(String.format("Position of the match should be from in range [0;4], but was: %d", pos));
+            throw new IllegalArgumentException(String.format("Position of the match should be in range [0;4], but was: %d", pos));
         }
         return matches.get(pos).getType();
     }

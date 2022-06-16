@@ -39,7 +39,7 @@ public class ConsolePrettyPrinter implements GameObserver {
 
     @Override
     public void onGuessExpected() {
-        println("\nExpecting {gguess #%d}...", ++guessCount);
+        println("\nExpecting {gGuess #%d}...", ++guessCount);
     }
 
     @Override

@@ -7,9 +7,7 @@ import java.util.function.IntPredicate;
 import java.util.function.Supplier;
 import optimax.workshop.config.accepter.WordSourceAccepter;
 import optimax.workshop.config.generator.WordSourceSolutionGenerator;
-import optimax.workshop.config.guesser.RandomGuesser;
-import optimax.workshop.config.guesser.SimpleGuesser;
-import optimax.workshop.config.guesser.UserInputGuesser;
+import optimax.workshop.config.guesser.RegexBasedGuesser;
 import optimax.workshop.config.matcher.StandardMatcher;
 import optimax.workshop.config.observer.AggregatedObserver;
 import optimax.workshop.config.observer.ConsolePrettyPrinter;
@@ -33,10 +31,11 @@ import optimax.workshop.runner.WordSource;
  */
 public class WordleGameApp {
 
-    public static final int MAX_ATTEMPTS = 6;
-    public static final IntPredicate RUN_CONDITION = i -> i <= 10;
-    public static final String WORDS_SOURCE = "/words.txt";
-    public static final String WORDS_SOURCE_PATH = WordleGameApp.class.getResource(WORDS_SOURCE).getPath();
+    private static final int MAX_ATTEMPTS = 6;
+    private static final int RUN_TIMES = 100;
+    private static final IntPredicate RUN_CONDITION = i -> i < RUN_TIMES;
+    private static final String WORDS_SOURCE = "/words.txt";
+    private static final String WORDS_SOURCE_PATH = WordleGameApp.class.getResource(WORDS_SOURCE).getPath();
 
     public static void main(String[] args) {
         GameRunner runner = createRunner();
@@ -48,12 +47,12 @@ public class WordleGameApp {
         WordAccepter accepter = new WordSourceAccepter(source);
         SolutionGenerator generator = new WordSourceSolutionGenerator(source);
 
-        Supplier<Guesser> guesser = () -> new SimpleGuesser();
+        Supplier<Guesser> guesser = () -> new RegexBasedGuesser();
 
         WordMatcher matcher = new StandardMatcher();
         GameObserver observer = new AggregatedObserver(List.of(
-                new ConsolePrettyPrinter()
-//                new ScoringObserver()
+                new ConsolePrettyPrinter(),
+                new ScoringObserver()
         ));
 
         return new RepeatedRunner(RUN_CONDITION, () -> {
