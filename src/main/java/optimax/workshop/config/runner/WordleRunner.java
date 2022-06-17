@@ -1,17 +1,18 @@
 package optimax.workshop.config.runner;
 
 import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
 
 import java.util.Collection;
 import optimax.workshop.core.Word;
-import optimax.workshop.core.WordleGame;
 import optimax.workshop.core.matcher.MatchResult;
-import optimax.workshop.core.matcher.WordMatcher;
+import optimax.workshop.core.matcher.MatchType;
 import optimax.workshop.runner.GameObserver;
 import optimax.workshop.runner.GameRunner;
 import optimax.workshop.runner.Guesser;
 import optimax.workshop.runner.SolutionGenerator;
 import optimax.workshop.runner.WordAccepter;
+import optimax.workshop.runner.WordMatcher;
 
 /**
  * @author Denys Chernyshov
@@ -37,42 +38,68 @@ public class WordleRunner implements GameRunner {
                         GameObserver observer,
                         WordMatcher matcher) {
         this.maxAttempts = maxAttempts;
-        this.generator = generator;
-        this.visibleSolutions = visibleSolutions;
-        this.visibleAccepted = visibleAccepted;
-        this.matcher = matcher;
-        this.observer = observer;
-        this.guesser = guesser;
-        this.accepter = accepter;
+        this.generator = requireNonNull(generator);
+        this.visibleSolutions = requireNonNull(visibleSolutions);
+        this.visibleAccepted = requireNonNull(visibleAccepted);
+        this.matcher = requireNonNull(matcher);
+        this.observer = requireNonNull(observer);
+        this.guesser = requireNonNull(guesser);
+        this.accepter = requireNonNull(accepter);
     }
 
     public void run(){
-        Word solution = generator.nextSolution();
-        WordleGame game = new WordleGame(maxAttempts, solution, matcher);
-        verifySolution(solution);
-        guesser.init(visibleSolutions, visibleAccepted);
-        observer.onCreated(game, solution,  guesser, accepter);
-        while(!game.isFinished()){
-            nextGuess(game);
+        Word solution = initializeGame();
+        verifyGame(solution, maxAttempts);
+        boolean isSolved = false;
+        for (int i = 0; i < maxAttempts && !isSolved; i++) {
+            Word guess = nextGuess();
+            isSolved = processGuess(solution, guess);
         }
-        observer.onFinished(game.isSolved());
+        observer.onFinished(isSolved);
     }
 
+    private boolean processGuess(Word solution, Word guess) {
+        if (accepter.isNotAccepted(guess))
+            return rejectGuess(guess);
+        return submitGuess(solution, guess);
+    }
 
-    private void nextGuess(WordleGame game) {
+    private Word initializeGame() {
+        Word solution = generator.nextSolution();
+        guesser.init(visibleSolutions, visibleAccepted);
+        observer.onCreated(solution, guesser, accepter);
+        return solution;
+    }
+
+    private Word nextGuess() {
         observer.onGuessExpected();
-        Word guess = guesser.nextGuess();
-        if (accepter.isNotAccepted(guess)){
-            observer.onGuessRejected(guess);
-            return;
-        }
-        MatchResult result = game.submit(guess);
+        return guesser.nextGuess();
+    }
+
+    private boolean submitGuess(Word solution, Word guess) {
+        MatchResult result = matcher.match(solution, guess);
         observer.onGuessSubmitted(guess, result);
         guesser.match(guess, result);
+        return isSolved(result);
     }
 
-    private void verifySolution(Word solution){
+    private boolean rejectGuess(Word guess) {
+        observer.onGuessRejected(guess);
+        return false;
+    }
+
+    private boolean isSolved(MatchResult result){
+        return result
+                .getMatches()
+                .stream()
+                .allMatch(m -> m.getType() == MatchType.CORRECT);
+    }
+
+    private void verifyGame(Word solution, int maxAttempts){
         if (accepter.isNotAccepted(solution))
             throw new IllegalArgumentException(format("Solution (%s) is not accepted", solution));
+        if (maxAttempts <= 0){
+            throw new IllegalArgumentException(format("Max attempts cannot be less than or equal to zero, but was: %d", maxAttempts));
+        }
     }
 }

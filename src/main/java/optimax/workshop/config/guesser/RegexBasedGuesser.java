@@ -12,8 +12,6 @@ import optimax.workshop.core.matcher.Match;
 import optimax.workshop.core.matcher.MatchResult;
 import optimax.workshop.core.matcher.MatchType;
 import optimax.workshop.runner.Guesser;
-import optimax.workshop.runner.WordAccepter;
-import optimax.workshop.runner.WordSource;
 
 /**
  * @author Denys Chernyshov

@@ -20,8 +20,8 @@ import optimax.workshop.runner.Guesser;
 public class SimpleGuesser implements Guesser {
 
     private List<Word> solutions;
-    private List<Word> submitted = new ArrayList<>();
-    private Set<Match> matches = new HashSet<>();
+    private final List<Word> submitted = new ArrayList<>();
+    private final Set<Match> matches = new HashSet<>();
 
     private Word fallback;
 

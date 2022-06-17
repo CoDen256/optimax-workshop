@@ -6,20 +6,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import optimax.workshop.config.observer.AggregatedObserver;
 import optimax.workshop.core.Word;
-import optimax.workshop.core.matcher.WordMatcher;
+import optimax.workshop.runner.WordMatcher;
 import optimax.workshop.runner.GameObserver;
 import optimax.workshop.runner.GameRunner;
 import optimax.workshop.runner.Guesser;
 import optimax.workshop.runner.SolutionGenerator;
 import optimax.workshop.runner.WordAccepter;
-import optimax.workshop.runner.WordSource;
 
 /**
  * @author Denys Chernyshov

@@ -2,7 +2,6 @@ package optimax.workshop.config.observer;
 
 import java.util.List;
 import optimax.workshop.core.Word;
-import optimax.workshop.core.WordleGame;
 import optimax.workshop.core.matcher.MatchResult;
 import optimax.workshop.runner.GameObserver;
 import optimax.workshop.runner.Guesser;
@@ -21,8 +20,8 @@ public class AggregatedObserver implements GameObserver {
     }
 
     @Override
-    public void onCreated(WordleGame game, Word solution, Guesser guesser, WordAccepter accepter) {
-        observers.forEach(o -> o.onCreated(game, solution, guesser, accepter));
+    public void onCreated(Word solution, Guesser guesser, WordAccepter accepter) {
+        observers.forEach(o -> o.onCreated(solution, guesser, accepter));
     }
 
     @Override

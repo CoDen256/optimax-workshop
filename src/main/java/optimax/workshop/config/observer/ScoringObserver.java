@@ -1,7 +1,6 @@
 package optimax.workshop.config.observer;
 
 import optimax.workshop.core.Word;
-import optimax.workshop.core.WordleGame;
 import optimax.workshop.core.matcher.MatchResult;
 import optimax.workshop.runner.GameObserver;
 import optimax.workshop.runner.Guesser;
@@ -21,7 +20,7 @@ public class ScoringObserver implements GameObserver {
     }
 
     @Override
-    public void onCreated(WordleGame game, Word solution, Guesser guesser, WordAccepter accepter) {
+    public void onCreated(Word solution, Guesser guesser, WordAccepter accepter) {
         count++;
 //        System.out.printf("[Scorer] Game %d started", count);
     }

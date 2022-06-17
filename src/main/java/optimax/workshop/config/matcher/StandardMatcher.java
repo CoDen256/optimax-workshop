@@ -3,15 +3,13 @@ package optimax.workshop.config.matcher;
 import static java.util.function.Predicate.not;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.IntStream;
 import optimax.workshop.core.Letter;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.matcher.Match;
 import optimax.workshop.core.matcher.MatchResult;
 import optimax.workshop.core.matcher.MatchType;
-import optimax.workshop.core.matcher.WordMatcher;
+import optimax.workshop.runner.WordMatcher;
 
 /**
  * Represents the standard Wordle matcher, that computes a {@link MatchResult} by following rules:

@@ -1,6 +1,7 @@
-package optimax.workshop.core.matcher;
+package optimax.workshop.runner;
 
 import optimax.workshop.core.Word;
+import optimax.workshop.core.matcher.MatchResult;
 
 /**
  * The {@code WordMatcher} compares two words and computes {@link  MatchResult} based on the amount

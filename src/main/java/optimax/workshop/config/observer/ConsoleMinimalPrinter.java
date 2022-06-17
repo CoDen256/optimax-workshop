@@ -1,13 +1,9 @@
 package optimax.workshop.config.observer;
 
-import static optimax.workshop.config.observer.ConsoleUtils.formatResult;
-import static optimax.workshop.config.observer.ConsoleUtils.formatWord;
-import static optimax.workshop.config.observer.ConsoleUtils.getMatchColor;
 import static optimax.workshop.config.observer.ConsoleUtils.print;
 import static optimax.workshop.config.observer.ConsoleUtils.println;
 
 import optimax.workshop.core.Word;
-import optimax.workshop.core.WordleGame;
 import optimax.workshop.core.matcher.MatchResult;
 import optimax.workshop.runner.GameObserver;
 import optimax.workshop.runner.Guesser;
@@ -24,8 +20,8 @@ public class ConsoleMinimalPrinter implements GameObserver {
     private int count = 0;
 
     @Override
-    public void onCreated(WordleGame game, Word solution, Guesser guesser, WordAccepter accepter) {
-        solution = game.getSolution();
+    public void onCreated(Word solution, Guesser guesser, WordAccepter accepter) {
+        this.solution = solution;
         count++;
     }
 
