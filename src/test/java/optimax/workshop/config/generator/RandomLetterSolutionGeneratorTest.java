@@ -18,6 +18,6 @@ class RandomLetterSolutionGeneratorTest {
 
         Word word = generator.nextSolution();
         assertNotNull(word);
-        assertEquals(5, word.word().length());
+        assertEquals(5, word.toString().length());
     }
 }

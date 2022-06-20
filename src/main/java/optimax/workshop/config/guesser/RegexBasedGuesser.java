@@ -31,7 +31,7 @@ public class RegexBasedGuesser implements Guesser {
 
     @Override
     public void init(Collection<Word> solutions, Collection<Word> accepted) {
-        wordList.addAll(solutions.stream().map(Word::word).collect(Collectors.toList()));
+        wordList.addAll(solutions.stream().map(Word::toString).collect(Collectors.toList()));
     }
 
     @Override

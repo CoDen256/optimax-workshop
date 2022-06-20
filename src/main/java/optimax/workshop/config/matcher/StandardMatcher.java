@@ -4,7 +4,7 @@ import static java.util.function.Predicate.not;
 
 import java.util.ArrayList;
 import java.util.List;
-import optimax.workshop.core.Letter;
+import java.util.Objects;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.matcher.Match;
 import optimax.workshop.core.matcher.MatchResult;
@@ -30,19 +30,17 @@ import optimax.workshop.runner.WordMatcher;
 public class StandardMatcher implements WordMatcher {
     @Override
     public MatchResult match(Word expectedWord, Word actualWord) {
-        List<Letter> expected = expectedWord.letters();
-        List<Letter> actual = actualWord.letters();
+        List<Letter> expected = letters(expectedWord);
+        List<Letter> actual = letters(actualWord);
         List<Letter> alreadyMatched = new ArrayList<>();
 
         List<Match> matches = new ArrayList<>();
-        actual.forEach(l ->
-                matches.add(new Match(MatchType.ABSENT, l.getPos(), l.getChar()))
-        );
+        actual.forEach(l -> matches.add(new Match(MatchType.ABSENT, l.pos, l.character)));
 
         for (Letter actualLetter : actual) {
             if (expected.contains(actualLetter)) {
                 alreadyMatched.add(actualLetter);
-                matches.set(actualLetter.getPos(), new Match(MatchType.CORRECT, actualLetter.getPos(), actualLetter.getChar()));
+                matches.set(actualLetter.pos, new Match(MatchType.CORRECT, actualLetter.pos, actualLetter.character));
             }
         }
 
@@ -54,14 +52,45 @@ public class StandardMatcher implements WordMatcher {
                     .findFirst()
                     .ifPresent(match -> {
                         alreadyMatched.add(match);
-                        matches.set(actualLetter.getPos(), new Match(MatchType.WRONG, actualLetter.getPos(), actualLetter.getChar()));
+                        matches.set(actualLetter.pos, new Match(MatchType.WRONG, actualLetter.pos, actualLetter.character));
                     });
         }
         return new MatchResult(matches);
     }
 
     private boolean isAtWrongPosition(Letter a, Letter b) {
-        return b.getChar() == a.getChar() && b.getPos() != a.getPos();
+        return b.character == a.character && b.pos != a.pos;
     }
 
+    private List<Letter> letters(Word word){
+        List<Letter> letters = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            char c = word.letter(i);
+            letters.add(new Letter(c, i));
+        }
+        return letters;
+    }
+
+    private static final class Letter {
+        private final char character;
+        private final int pos;
+
+        public Letter(char character, int pos) {
+            this.character = character;
+            this.pos = pos;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Letter that = (Letter) o;
+            return character == that.character && pos == that.pos;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(character, pos);
+        }
+    }
 }

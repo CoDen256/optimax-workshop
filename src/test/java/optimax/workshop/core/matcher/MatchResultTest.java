@@ -10,8 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -21,55 +20,82 @@ import org.junit.jupiter.api.Test;
 class MatchResultTest {
     @Test
     void createEmptyMatchResultFails() {
-        assertThrows(IllegalArgumentException.class, () -> new MatchResult(emptyList()));
+        assertThrows(MatchResult.InvalidMatchResultException.class, () -> new MatchResult(emptyList()));
     }
 
     @Test
     void createMatchResultWithNullMatches() {
-        assertThrows(NullPointerException.class, () -> new MatchResult( null));
+        assertThrows(NullPointerException.class, () -> new MatchResult(null));
     }
 
     @Test
     void createMatchResultWithLessThan5MatchesFails() {
-        assertThrows(IllegalArgumentException.class, () -> matchResult(
-                ABSENT, CORRECT, WRONG, CORRECT
+        assertThrows(MatchResult.InvalidMatchResultException.class, () -> result(
+                m(0, 'a', ABSENT),
+                m(0, 'a', CORRECT),
+                m(0, 'a', WRONG),
+                m(0, 'a', CORRECT)
         ));
     }
 
     @Test
     void createMatchResultWithMoreThan5MatchesFails() {
-        assertThrows(IllegalArgumentException.class, () -> matchResult(
-                ABSENT, CORRECT, WRONG, CORRECT, CORRECT, WRONG
+        assertThrows(MatchResult.InvalidMatchResultException.class, () -> result(
+                m(0, 'a', ABSENT),
+                m(0, 'a', CORRECT),
+                m(0, 'a', WRONG),
+                m(0, 'a', CORRECT),
+                m(0, 'a', CORRECT),
+                m(0, 'a', CORRECT)
         ));
     }
 
 
     @Test
-    void createMatchResultWith5Matches() {
-        assertDoesNotThrow(() -> matchResult(
-                ABSENT, CORRECT, WRONG, CORRECT, CORRECT
+    void createMatchResultWithMissingPositionFails() {
+        assertThrows(MatchResult.MissingMatchPositionException.class, () -> result(
+                m(0, 'a', ABSENT),
+                m(1, 'a', CORRECT),
+                m(2, 'a', WRONG),
+                m(3, 'a', CORRECT),
+                m(3, 'a', CORRECT)
+        ));
+
+        assertThrows(MatchResult.MissingMatchPositionException.class, () -> result(
+                m(5, 'a', ABSENT),
+                m(6, 'a', CORRECT),
+                m(7, 'a', WRONG),
+                m(8, 'a', CORRECT),
+                m(9, 'a', CORRECT)
         ));
     }
 
     @Test
     void getMatchAtFailsIfNotInRange() {
-        MatchResult result = matchResult(
-                ABSENT, CORRECT, WRONG, CORRECT, CORRECT
+        MatchResult result = result(
+                m(0, 'a', ABSENT),
+                m(1, 'a', CORRECT),
+                m(2, 'a', WRONG),
+                m(3, 'a', CORRECT),
+                m(4, 'a', CORRECT)
         );
-        assertThrows(IllegalArgumentException.class, () -> result.matchTypeAt(-2));
-        assertThrows(IllegalArgumentException.class, () -> result.matchTypeAt(-1));
-        assertThrows(IllegalArgumentException.class, () -> result.matchTypeAt(5));
-        assertThrows(IllegalArgumentException.class, () -> result.matchTypeAt(6));
-        assertThrows(IllegalArgumentException.class, () -> result.matchTypeAt(12));
+        assertThrows(IndexOutOfBoundsException.class, () -> result.matchTypeAt(-2));
+        assertThrows(IndexOutOfBoundsException.class, () -> result.matchTypeAt(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> result.matchTypeAt(5));
+        assertThrows(IndexOutOfBoundsException.class, () -> result.matchTypeAt(6));
+        assertThrows(IndexOutOfBoundsException.class, () -> result.matchTypeAt(12));
     }
 
 
     @Test
-    void getMatchAtPosition() {
-        MatchResult result = matchResult(
-                ABSENT, CORRECT, WRONG, CORRECT, CORRECT
+    void getMatchTypeAtPosition() {
+        MatchResult result = result(
+                m(0, 'a', ABSENT),
+                m(1, 'a', CORRECT),
+                m(2, 'a', WRONG),
+                m(3, 'a', CORRECT),
+                m(4, 'a', CORRECT)
         );
-
         assertEquals(ABSENT, result.matchTypeAt(0));
         assertEquals(CORRECT, result.matchTypeAt(1));
         assertEquals(WRONG, result.matchTypeAt(2));
@@ -78,27 +104,90 @@ class MatchResultTest {
     }
 
     @Test
-    void getMatches(){
-        MatchResult result = matchResult(
-                ABSENT, CORRECT, WRONG, CORRECT, CORRECT
+    void getMatchAtPosition() {
+        MatchResult result = result(
+                m(0, 'a', ABSENT),
+                m(1, 'a', CORRECT),
+                m(2, 'a', WRONG),
+                m(3, 'a', CORRECT),
+                m(4, 'a', CORRECT)
+        );
+        assertEquals(m(0, 'a', ABSENT), result.matchAt(0));
+        assertEquals(m(1, 'a', CORRECT), result.matchAt(1));
+        assertEquals(m(2, 'a', WRONG), result.matchAt(2));
+        assertEquals(m(3, 'a', CORRECT), result.matchAt(3));
+        assertEquals(m(4, 'a', CORRECT), result.matchAt(4));
+    }
+
+    @Test
+    void getMatchAtPositionIndependentOfOrder() {
+        MatchResult result = result(
+                m(4, 'a', CORRECT),
+                m(2, 'a', WRONG),
+                m(3, 'a', CORRECT),
+                m(0, 'a', ABSENT),
+                m(1, 'a', CORRECT)
+                );
+        assertEquals(m(0, 'a', ABSENT), result.matchAt(0));
+        assertEquals(m(1, 'a', CORRECT), result.matchAt(1));
+        assertEquals(m(2, 'a', WRONG), result.matchAt(2));
+        assertEquals(m(3, 'a', CORRECT), result.matchAt(3));
+        assertEquals(m(4, 'a', CORRECT), result.matchAt(4));
+    }
+
+    @Test
+    void getMatches() {
+        MatchResult result = result(
+                m(0, 'a', ABSENT),
+                m(1, 'b', CORRECT),
+                m(2, 'c', WRONG),
+                m(3, 'd', CORRECT),
+                m(4, 'e', CORRECT)
         );
 
         assertThat(result.getMatches()).containsExactly(
-                new Match(ABSENT, 0, 'a'),
-                new Match(CORRECT, 1, 'a'),
-                new Match(WRONG, 2, 'a'),
-                new Match(CORRECT, 3, 'a'),
-                new Match(CORRECT, 4, 'a')
-        );
+                m( 0, 'a', ABSENT),
+                m( 1, 'b', CORRECT),
+                m( 2, 'c', WRONG),
+                m( 3, 'd', CORRECT),
+                m( 4, 'e', CORRECT)
+        ).inOrder();
+    }
+
+    @Test
+    void getMatchesIndependentOfOrder() {
+        MatchResult result = result(
+                m(4, 'e', CORRECT),
+                m(1, 'b', CORRECT),
+                m(2, 'c', WRONG),
+                m(3, 'd', CORRECT),
+                m(0, 'a', ABSENT)
+                );
+
+        assertThat(result.getMatches()).containsExactly(
+                m( 0, 'a', ABSENT),
+                m( 1, 'b', CORRECT),
+                m( 2, 'c', WRONG),
+                m( 3, 'd', CORRECT),
+                m( 4, 'e', CORRECT)
+        ).inOrder();
     }
 
     @Test
     void differentResultsAreNotEqual() {
-        MatchResult result = matchResult(
-                ABSENT, CORRECT, WRONG, CORRECT, CORRECT
+        MatchResult result = result(
+                m(0, 'a', ABSENT),
+                m(1, 'b', CORRECT),
+                m(2, 'c', WRONG),
+                m(3, 'd', CORRECT),
+                m(4, 'e', CORRECT)
         );
-        MatchResult result2 = matchResult(
-                ABSENT, WRONG, WRONG, WRONG, WRONG
+        MatchResult result2 = result(
+                m(0, 'a', ABSENT),
+                m(1, 'b', CORRECT),
+                m(2, 'c', WRONG),
+                m(3, 'd', CORRECT),
+                m(4, 'e', ABSENT)
         );
 
         assertNotEquals(result, result2);
@@ -106,38 +195,77 @@ class MatchResultTest {
 
     @Test
     void sameResultsAreEqual() {
-        MatchResult result = matchResult(
-                ABSENT, CORRECT, WRONG, CORRECT, CORRECT
+        MatchResult result = result(
+                m(0, 'a', ABSENT),
+                m(1, 'b', CORRECT),
+                m(2, 'c', WRONG),
+                m(3, 'd', CORRECT),
+                m(4, 'e', CORRECT)
         );
-        MatchResult result2 = matchResult(
-                ABSENT, CORRECT, WRONG, CORRECT, CORRECT
+        MatchResult result2 = result(
+                m(0, 'a', ABSENT),
+                m(1, 'b', CORRECT),
+                m(2, 'c', WRONG),
+                m(3, 'd', CORRECT),
+                m(4, 'e', CORRECT)
         );
 
         assertEquals(result, result2);
     }
 
     @Test
-    void sameResultsDifferentOrderAreNotEqual() {
-        MatchResult result = matchResult(
-                ABSENT, CORRECT, WRONG, CORRECT, CORRECT
+    void sameResultsDifferentOrderAreEqual() {
+        MatchResult result = result(
+                m(0, 'a', ABSENT),
+                m(1, 'b', CORRECT),
+                m(2, 'c', WRONG),
+                m(3, 'd', CORRECT),
+                m(4, 'e', CORRECT)
         );
-        MatchResult result2 = matchResult(
-                ABSENT, CORRECT, CORRECT, WRONG, CORRECT
-        );
+        MatchResult result2 = result(
+                m(2, 'c', WRONG),
+                m(3, 'd', CORRECT),
+                m(0, 'a', ABSENT),
+                m(4, 'e', CORRECT),
+                m(1, 'b', CORRECT)
+                );
 
-        assertNotEquals(result, result2);
+        assertEquals(result, result2);
     }
 
     @Test
     void matchResultToString() {
-        MatchResult result = matchResult(ABSENT, CORRECT, WRONG, CORRECT, ABSENT);
+        MatchResult result = result(
+                m(0, 'a', ABSENT),
+                m(1, 'b', CORRECT),
+                m(2, 'c', WRONG),
+                m(3, 'd', CORRECT),
+                m(4, 'e', ABSENT)
+        );
         assertEquals("[x+-+x]", result.toString());
     }
 
-    private MatchResult matchResult(MatchType... types){
-        return new MatchResult(IntStream
-                .range(0, types.length)
-                .mapToObj(t -> new Match(types[t], t, 'a'))
-                .collect(Collectors.toList()));
+    @Test
+    void sameMatchesAreEqual() {
+        assertEquals(m(0, 'a', ABSENT), m(0, 'a', ABSENT));
+        assertEquals(m(0, 'b', ABSENT), m(0, 'b', ABSENT));
+        assertEquals(m(1, 'b', ABSENT), m(1, 'b', ABSENT));
+        assertEquals(m(1, 'b', CORRECT), m(1, 'b', CORRECT));
+    }
+
+    @Test
+    void differentMatchesAreNotEqual() {
+        assertNotEquals(m(0, 'a', ABSENT), m(0, 'b', ABSENT));
+        assertNotEquals(m(0, 'a', ABSENT), m(1, 'a', ABSENT));
+        assertNotEquals(m(0, 'a', ABSENT), m(0, 'a', CORRECT));
+        assertNotEquals(m(0, 'a', ABSENT), m(1, 'b', CORRECT));
+    }
+
+    private Match m(int position, char letter, MatchType type) {
+        return new Match(type, position, letter);
+    }
+
+    private MatchResult result(Match... matches) {
+        return new MatchResult(Arrays.asList(matches));
     }
 }

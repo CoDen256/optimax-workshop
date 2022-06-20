@@ -50,8 +50,8 @@ public final class FileWordLoader {
     private static Word tryCreateWord(int lineNumber, String line) {
         try {
             return new Word(line.trim());
-        } catch (IllegalArgumentException ex){
-            throw new IllegalArgumentException(format("Unable to create word `%s` at line %d", line, lineNumber), ex);
+        } catch (Word.InvalidWordLengthException | Word.InvalidLetterException ex){
+            throw new Word.InvalidWordException(format("Unable to create word `%s` at line %d", line, lineNumber), ex);
         }
     }
 }

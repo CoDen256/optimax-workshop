@@ -17,7 +17,7 @@ class WordAccepterTest {
 
     @Test
     void accepterAcceptsOnlyWordsMatchingPredicate() {
-        WordAccepter accepter = s -> s.word().charAt(0) == 'v';
+        WordAccepter accepter = s -> s.toString().charAt(0) == 'v';
 
         assertFalse(accepter.isAccepted(word("xxxxx")));
         assertFalse(accepter.isAccepted(word("abcde")));

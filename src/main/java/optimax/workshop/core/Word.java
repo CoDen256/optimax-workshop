@@ -17,55 +17,59 @@ import java.util.Objects;
 public final class Word {
 
     private final String word;
-    private final List<Letter> letters = new ArrayList<>();
+    private final List<Character> letters = new ArrayList<>();
 
     public Word(String input) {
         verifyWord(input);
         word = input.toLowerCase();
-        for (int i = 0; i < word.length(); i++) {
-            char c = this.word.charAt(i);
-            verifyLetter(c, i);
-            letters.add(new Letter(c, i));
-        }
+        word.chars().forEach( letter -> letters.add(verifyLetter((char)letter, word)));
     }
 
     private void verifyWord(String word) {
         requireNonNull(word);
-
-        if (isNotFiveLetterWord(word))
-            throw new IllegalArgumentException(
+        if (word.length() != 5)
+            throw new InvalidWordLengthException(
                     format("Word length must be 5, but was: %d (%s)", word.length(), word));
     }
 
-    private void verifyLetter(char c, int i) {
-        if (isInvalidLetter(c))
-            throw new IllegalArgumentException(
-                    format("Letter '%s' is not alphabetic in word <%s> at position %d", c, this.word, i));
-    }
-
-    public String word() {
-        return word;
+    private char verifyLetter(char c, String word) {
+        if (!isValidLetter(c))
+            throw new InvalidLetterException(
+                    format("Letter '%s' is not valid in word (%s)", c, word));
+        return c;
     }
 
     public char letter(int index) {
-        return letters.get(index).getChar();
+        return word.charAt(index);
     }
 
-    public List<Letter> letters() {
+    public char[] lettersAsArray() {
+        return word.toCharArray();
+    }
+
+    public List<Character> letters() {
         return Collections.unmodifiableList(letters);
+    }
+
+    public boolean contains(char letter){
+        return letters.contains(Character.toLowerCase(letter));
+    }
+
+    public boolean contains(String letter){
+        return word.contains(letter.toLowerCase());
     }
 
     @Override
     public String toString() {
-        return String.format("<%s>", word);
+        return word;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Word word1 = (Word) o;
-        return word.equals(word1.word);
+        Word other = (Word) o;
+        return word.equals(other.word);
     }
 
     @Override
@@ -73,19 +77,45 @@ public final class Word {
         return Objects.hash(word);
     }
 
-    private static boolean isNotFiveLetterWord(String word) {
-        return word.length() != 5;
-    }
-
-    public static boolean isInvalidLetter(char c) {
-        return !Character.isAlphabetic(c);
+    public static boolean isValidLetter(char c) {
+        return Character.isAlphabetic(c);
     }
 
     public static boolean isValid(String word) {
-        if (word == null || isNotFiveLetterWord(word)) return false;
+        if (word == null || word.length() != 5) return false;
         for (char c : word.toCharArray())
-            if (isInvalidLetter(c))
+            if (!isValidLetter(c))
                 return false;
         return true;
+    }
+
+    public static class InvalidWordLengthException extends RuntimeException{
+        public InvalidWordLengthException(String message) {
+            super(message);
+        }
+
+        public InvalidWordLengthException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+
+    public static class InvalidLetterException extends RuntimeException{
+        public InvalidLetterException(String message) {
+            super(message);
+        }
+
+        public InvalidLetterException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+
+    public static class InvalidWordException extends RuntimeException{
+        public InvalidWordException(String message) {
+            super(message);
+        }
+
+        public InvalidWordException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
 }

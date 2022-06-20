@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import optimax.workshop.core.Letter;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.matcher.Match;
 import optimax.workshop.core.matcher.MatchResult;
@@ -61,6 +60,6 @@ public class SimpleGuesser implements Guesser {
     }
 
     private boolean wordContainsLetter(Word word, char letter) {
-        return word.letters().stream().map(Letter::getChar).anyMatch(c -> c == letter);
+        return word.letters().stream().anyMatch(c -> c == letter);
     }
 }

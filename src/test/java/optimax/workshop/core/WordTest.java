@@ -17,18 +17,17 @@ class WordTest {
 
     @Test
     void createWordGetSameLetters() {
-        assertEquals("valid", new Word("valid").word());
-        assertEquals("adult", new Word("adult").word());
-        assertEquals("pesto", new Word("pesto").word());
-        assertEquals("xxxxx", new Word("xxxxx").word());
-        assertEquals("äüößz", new Word("äüößz").word());
+        assertEquals("valid", new Word("valid").toString());
+        assertEquals("adult", new Word("adult").toString());
+        assertEquals("pesto", new Word("pesto").toString());
+        assertEquals("xxxxx", new Word("xxxxx").toString());
     }
 
     @Test
     void createWordWithNumbersFail() {
-        assertThrows(IllegalArgumentException.class, () -> new Word("vali5"));
-        assertThrows(IllegalArgumentException.class, () -> new Word("1xxx5"));
-        assertThrows(IllegalArgumentException.class, () -> new Word("12345"));
+        assertThrows(Word.InvalidLetterException.class, () -> new Word("vali5"));
+        assertThrows(Word.InvalidLetterException.class, () -> new Word("1xxx5"));
+        assertThrows(Word.InvalidLetterException.class, () -> new Word("12345"));
     }
 
 
@@ -39,40 +38,40 @@ class WordTest {
 
     @Test
     void createWordWithSpecialCharactersFail() {
-        assertThrows(IllegalArgumentException.class, () -> new Word("vali%"));
-        assertThrows(IllegalArgumentException.class, () -> new Word("-xxx^"));
-        assertThrows(IllegalArgumentException.class, () -> new Word("!234'"));
-        assertThrows(IllegalArgumentException.class, () -> new Word("     "));
-        assertThrows(IllegalArgumentException.class, () -> new Word("\n\n\n\n\n"));
+        assertThrows(Word.InvalidLetterException.class, () -> new Word("vali%"));
+        assertThrows(Word.InvalidLetterException.class, () -> new Word("-xxx^"));
+        assertThrows(Word.InvalidLetterException.class, () -> new Word("!234'"));
+        assertThrows(Word.InvalidLetterException.class, () -> new Word("     "));
+        assertThrows(Word.InvalidLetterException.class, () -> new Word("\n\n\n\n\n"));
     }
 
     @Test
     void createTooFewWordLettersFail() {
-        assertThrows(IllegalArgumentException.class, () -> new Word("v"));
-        assertThrows(IllegalArgumentException.class, () -> new Word("va"));
-        assertThrows(IllegalArgumentException.class, () -> new Word("val"));
-        assertThrows(IllegalArgumentException.class, () -> new Word("vali"));
+        assertThrows(Word.InvalidWordLengthException.class, () -> new Word("v"));
+        assertThrows(Word.InvalidWordLengthException.class, () -> new Word("va"));
+        assertThrows(Word.InvalidWordLengthException.class, () -> new Word("val"));
+        assertThrows(Word.InvalidWordLengthException.class, () -> new Word("vali"));
     }
 
     @Test
     void createTooManyWordLettersFail() {
-        assertThrows(IllegalArgumentException.class, () -> new Word("validv"));
-        assertThrows(IllegalArgumentException.class, () -> new Word("validva"));
-        assertThrows(IllegalArgumentException.class, () -> new Word("validval"));
-        assertThrows(IllegalArgumentException.class, () -> new Word("hustensaft"));
+        assertThrows(Word.InvalidWordLengthException.class, () -> new Word("validv"));
+        assertThrows(Word.InvalidWordLengthException.class, () -> new Word("validva"));
+        assertThrows(Word.InvalidWordLengthException.class, () -> new Word("validval"));
+        assertThrows(Word.InvalidWordLengthException.class, () -> new Word("hustensaft"));
     }
 
     @Test
     void createWordIsCaseInsensitive() {
-        assertEquals("valid", new Word("Valid").word());
-        assertEquals("valid", new Word("VALID").word());
-        assertEquals("xxxxx", new Word("XxXxX").word());
+        assertEquals("valid", new Word("Valid").toString());
+        assertEquals("valid", new Word("VALID").toString());
+        assertEquals("xxxxx", new Word("XxXxX").toString());
     }
 
     @Test
     void createWordSameOrder() {
-        assertEquals("alidv", new Word("alidv").word());
-        assertEquals("abcde", new Word("abcde").word());
+        assertEquals("alidv", new Word("alidv").toString());
+        assertEquals("abcde", new Word("abcde").toString());
     }
 
     @Test
@@ -89,9 +88,9 @@ class WordTest {
 
     @Test
     void wordStringRepresentsWord() {
-        assertEquals("<abcde>", new Word("abcde").toString());
-        assertEquals("<valid>", new Word("VALID").toString());
-        assertEquals("<xxxxx>", new Word("xxxxx").toString());
+        assertEquals("abcde", new Word("abcde").toString());
+        assertEquals("valid", new Word("VALID").toString());
+        assertEquals("xxxxx", new Word("xxxxx").toString());
     }
 
     @Test
@@ -108,19 +107,13 @@ class WordTest {
     @Test
     void letters() {
         assertThat(new Word("aBcDV").letters()).containsExactly(
-                new Letter('a', 0),
-                new Letter('b', 1),
-                new Letter('c', 2),
-                new Letter('d', 3),
-                new Letter('v', 4)
-        ).inOrder();
+                'a', 'b', 'c', 'd', 'v').inOrder();
         assertThat(new Word("PQIWU").letters()).containsExactly(
-                new Letter('p', 0),
-                new Letter('q', 1),
-                new Letter('i', 2),
-                new Letter('w', 3),
-                new Letter('u', 4)
-        ).inOrder();
+                'p', 'q', 'i', 'w', 'u').inOrder();
+        assertThat(new Word("xYZui").lettersAsArray()).asList().containsExactly(
+                'x', 'y', 'z', 'u', 'i').inOrder();
+        assertThat(new Word("abcde").lettersAsArray()).asList().containsExactly(
+                'a', 'b', 'c', 'd', 'e').inOrder();
     }
 
     @Test
@@ -140,4 +133,48 @@ class WordTest {
         assertFalse(Word.isValid("     "));
     }
 
+    @Test
+    void letterIsValid() {
+        assertTrue(Word.isValidLetter('a'));
+        assertTrue(Word.isValidLetter('z'));
+        assertTrue(Word.isValidLetter('A'));
+        assertTrue(Word.isValidLetter('b'));
+        assertTrue(Word.isValidLetter('x'));
+        assertFalse(Word.isValidLetter(' '));
+        assertFalse(Word.isValidLetter('1'));
+        assertFalse(Word.isValidLetter('%'));
+        assertFalse(Word.isValidLetter('\0'));
+        assertFalse(Word.isValidLetter('_'));
+    }
+
+
+    @Test
+    void contains() {
+        Word word = new Word("abcde");
+        assertTrue(word.contains('a'));
+        assertTrue(word.contains('b'));
+        assertTrue(word.contains('c'));
+        assertTrue(word.contains('d'));
+        assertTrue(word.contains('e'));
+        assertTrue(word.contains('A'));
+        assertTrue(word.contains('E'));
+        assertTrue(word.contains("a"));
+        assertTrue(word.contains("b"));
+        assertTrue(word.contains("c"));
+        assertTrue(word.contains("d"));
+        assertTrue(word.contains("e"));
+        assertTrue(word.contains("A"));
+        assertTrue(word.contains("E"));
+        assertTrue(word.contains("D"));
+        assertTrue(word.contains("AB"));
+
+        assertFalse(word.contains(" "));
+        assertFalse(word.contains(' '));
+        assertFalse(word.contains('z'));
+        assertFalse(word.contains('%'));
+        assertFalse(word.contains('y'));
+        assertFalse(word.contains("f"));
+        assertFalse(word.contains("g"));
+        assertFalse(word.contains("H"));
+    }
 }

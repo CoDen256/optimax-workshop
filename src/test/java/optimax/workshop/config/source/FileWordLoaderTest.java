@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
+import optimax.workshop.config.FileWordLoader;
 import optimax.workshop.core.Word;
 import org.junit.jupiter.api.Test;
 
@@ -26,13 +27,13 @@ class FileWordLoaderTest {
                 word("valid")
         );
 
-        assertThat(optimax.workshop.config.FileWordLoader.load(getFileSource("/words.txt"))).containsExactlyElementsIn(expected);
+        assertThat(FileWordLoader.load(path("/words.txt"))).containsExactlyElementsIn(expected);
     }
 
     @Test
     void readWholeSet() {
 
-        assertEquals(5757, optimax.workshop.config.FileWordLoader.load(getFileSource("/words-full.txt")).size());
+        assertEquals(5757, FileWordLoader.load(path("/words-full.txt")).size());
     }
 
     @Test
@@ -43,25 +44,25 @@ class FileWordLoaderTest {
                 word("appol"),
                 word("valid")
         );
-        assertThat(optimax.workshop.config.FileWordLoader.load(getFileSource("/words-spaces.txt"))).containsExactlyElementsIn(expected);
+        assertThat(FileWordLoader.load(path("/words-spaces.txt"))).containsExactlyElementsIn(expected);
     }
 
     @Test
     void failAtNullPath() {
-        assertThrows(NullPointerException.class, () ->  optimax.workshop.config.FileWordLoader.load(null));
+        assertThrows(NullPointerException.class, () ->  FileWordLoader.load(null));
     }
 
     @Test
     void failAtNonExistingPath() {
-        assertThrows(IllegalArgumentException.class, () ->  optimax.workshop.config.FileWordLoader.load(UUID.randomUUID().toString()));
+        assertThrows(IllegalArgumentException.class, () ->  FileWordLoader.load(UUID.randomUUID().toString()));
     }
 
     @Test
     void failAtInvalidWords() {
-        assertThrows(IllegalArgumentException.class, () ->  optimax.workshop.config.FileWordLoader.load("/words-invalid.txt"));
+        assertThrows(Word.InvalidWordException.class, () ->  FileWordLoader.load(path("/words-invalid.txt")));
     }
 
-    private String getFileSource(String name) {
+    private String path(String name) {
         return FileWordLoaderTest.class.getResource(name).getPath();
     }
 }

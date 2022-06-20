@@ -80,7 +80,7 @@ public class ConsoleUtils {
 
     public static String formatWord(String charFormat, Word guess, String prefix, String suffix) {
         StringBuilder sb = new StringBuilder(prefix);
-        for (char c : guess.word().toUpperCase().toCharArray()) {
+        for (char c : guess.toString().toUpperCase().toCharArray()) {
             sb.append(String.format(charFormat, c));
         }
         sb.append(suffix);
