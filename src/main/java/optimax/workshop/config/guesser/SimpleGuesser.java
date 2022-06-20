@@ -20,11 +20,8 @@ import optimax.workshop.runner.Guesser;
 public class SimpleGuesser implements Guesser {
 
     private List<Word> solutions;
-    private final List<Word> submitted = new ArrayList<>();
     private final Set<Match> matches = new HashSet<>();
-
     private Word fallback;
-
     @Override
     public void init(Collection<Word> solutions, Collection<Word> accepted) {
         this.solutions = new ArrayList<>(solutions);
@@ -39,7 +36,6 @@ public class SimpleGuesser implements Guesser {
 
     @Override
     public void match(Word guess, MatchResult result) {
-        submitted.add(guess);
         matches.addAll(result.getMatches());
     }
 

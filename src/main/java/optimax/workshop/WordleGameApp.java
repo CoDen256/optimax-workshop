@@ -18,15 +18,15 @@ public class WordleGameApp {
         createRunner().run();
     }
     private static GameRunner createRunner() {
-        Collection<Word> solutions = FileWordLoader.load(resource("/words.txt"));
-        Collection<Word> accepted = FileWordLoader.load(resource("/words.txt"));
+        Collection<Word> solutions = FileWordLoader.load(path("/words.txt"));
+        Collection<Word> accepted = FileWordLoader.load(path("/words.txt"));
         return new GameRunnerBuilder()
                 // The guesser (created each time newly for each game)
                 .guesser(() -> new RegexBasedGuesser())
 
-                // Solutions that are visible to guesser based on actual solutions
+                // Solutions that are visible to guesser
                 .solutionsVisibleToGuesser(solutions)
-                // Accepted words that are visible to guesser based on actual accepted words
+                // Accepted words that are visible to guesser
                 .acceptedVisibleToGuesser(accepted)
 
                 // The generator of the solution for each game based on the solution set
@@ -44,7 +44,7 @@ public class WordleGameApp {
                 .build();
     }
 
-    private static String resource(String resource){
+    private static String path(String resource){
         return WordleGameApp.class.getResource(resource).getPath();
     }
 }
