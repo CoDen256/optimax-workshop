@@ -7,6 +7,7 @@ import optimax.workshop.config.generator.CollectionSolutionGenerator;
 import optimax.workshop.config.guesser.RandomGuesser;
 import optimax.workshop.config.guesser.RegexBasedGuesser;
 import optimax.workshop.config.guesser.SimpleGuesser;
+import optimax.workshop.config.guesser.StandardInputGuesser;
 import optimax.workshop.config.matcher.StandardMatcher;
 import optimax.workshop.config.observer.AggregatedFullObserver;
 import optimax.workshop.config.observer.ConsoleMinimalPrinter;
@@ -28,9 +29,7 @@ public class WordleGameApp {
         Collection<Word> accepted = FileWordLoader.load(path("/words.txt"));
         return new GameRunnerBuilder()
                 // The guesser (created each time newly for each game)
-                .guesser(() -> new RegexBasedGuesser())
-                .guesser(() -> new SimpleGuesser())
-                .guesser(() -> new RandomGuesser())
+                .guesser(() -> new StandardInputGuesser())
 
                 // Solutions that are visible to guesser
                 .solutionsVisibleToGuesser(solutions)
@@ -52,7 +51,7 @@ public class WordleGameApp {
                 ))
 
                 .maxAttempts(6)                 // Max attempts per game
-                .runLimit(9)           // Total amount of games
+                .runLimit(10)           // Total amount of games
 
                 .matcher(new StandardMatcher()) // Word comparing strategy
                 .build();

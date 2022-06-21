@@ -55,21 +55,19 @@ public class WordleRunner implements GameRunner {
 
         verifyGame(solution, maxAttempts);
         boolean isSolved = false;
-        for (int i = 0; i < maxAttempts && !isSolved; i++) {
+        int attempt = 0;
+        while (attempt < maxAttempts && !isSolved){
             observer.onGuessExpected();
             Word guess = guesser.nextGuess();
 
-            isSolved = processGuess(solution, guess);
+            if (accepter.isNotAccepted(guess)) {
+                observer.onGuessRejected(guess);
+            } else {
+                isSolved = submitGuess(solution, guess);
+                attempt++;
+            }
         }
         observer.onGameFinished(isSolved);
-    }
-
-    private boolean processGuess(Word solution, Word guess) {
-        if (accepter.isNotAccepted(guess)) {
-            observer.onGuessRejected(guess);
-            return false;
-        }
-        return submitGuess(solution, guess);
     }
 
     private boolean submitGuess(Word solution, Word guess) {

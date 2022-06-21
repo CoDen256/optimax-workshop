@@ -38,7 +38,7 @@ public class ConsolePrettyPrinter extends EmptyGameStateObserver {
 
     @Override
     public void onGuessExpected(GameSnapshot game) {
-        println("\nExpecting {gGuess #%d}...", game.getGuessesCount());
+        println("\nExpecting {gGuess #%d}...", game.getGuessesCount()+1);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ConsolePrettyPrinter extends EmptyGameStateObserver {
 
     @Override
     public void onGuessRejected(Word guess, GameSnapshot snapshot) {
-        print("{rGuess #%d rejected}:\n", snapshot.getGuessesCount());
+        print("{rGuess #%d rejected}:\n", snapshot.getGuessesCount()+1);
         printWord(guess, "{R{b", "}");
     }
 
