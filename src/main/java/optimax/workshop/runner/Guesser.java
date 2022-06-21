@@ -12,4 +12,8 @@ public interface Guesser {
     void init(Collection<Word> solutions, Collection<Word> accepted);
     Word nextGuess();
     void match(Word guess, MatchResult result);
+
+    default String name(){
+        return getClass().getSimpleName();
+    }
 }

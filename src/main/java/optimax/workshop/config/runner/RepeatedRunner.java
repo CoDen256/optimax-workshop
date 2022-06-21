@@ -1,7 +1,7 @@
 package optimax.workshop.config.runner;
 
-import java.util.function.IntPredicate;
 import java.util.function.Supplier;
+import optimax.workshop.runner.GameObserver;
 import optimax.workshop.runner.GameRunner;
 
 /**
@@ -10,22 +10,25 @@ import optimax.workshop.runner.GameRunner;
  */
 public class RepeatedRunner implements GameRunner {
     private final Supplier<GameRunner> runner;
-    private final IntPredicate runNext;
+    private final GameObserver observer;
+    private final int runCount;
 
-    public RepeatedRunner(IntPredicate runCondition,
+    public RepeatedRunner(int runCount,
+                          GameObserver observer,
                           Supplier<GameRunner> runner
 
     ) {
         this.runner = runner;
-        this.runNext = runCondition;
+        this.runCount = runCount;
+        this.observer = observer;
     }
 
     @Override
     public void run() {
-        int i = 0;
-        while(runNext.test(i)){
+        observer.onRunLaunched(runCount);
+        for (int i = 0; i < runCount; i++) {
             runner.get().run();
-            i++;
         }
+        observer.onRunFinished();
     }
 }

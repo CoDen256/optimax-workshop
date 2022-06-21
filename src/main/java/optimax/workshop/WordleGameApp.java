@@ -4,11 +4,16 @@ import java.util.Collection;
 import optimax.workshop.config.FileWordLoader;
 import optimax.workshop.config.accepter.CollectionAccepter;
 import optimax.workshop.config.generator.CollectionSolutionGenerator;
+import optimax.workshop.config.guesser.RandomGuesser;
 import optimax.workshop.config.guesser.RegexBasedGuesser;
+import optimax.workshop.config.guesser.SimpleGuesser;
 import optimax.workshop.config.matcher.StandardMatcher;
+import optimax.workshop.config.observer.AggregatedFullObserver;
 import optimax.workshop.config.observer.ConsoleMinimalPrinter;
 import optimax.workshop.config.observer.ConsolePrettyPrinter;
-import optimax.workshop.config.observer.ScoringObserver;
+import optimax.workshop.config.observer.Greeter;
+import optimax.workshop.config.observer.ScorePrettyPrinter;
+import optimax.workshop.config.observer.Scorer;
 import optimax.workshop.config.runner.GameRunnerBuilder;
 import optimax.workshop.core.Word;
 import optimax.workshop.runner.GameRunner;
@@ -24,6 +29,8 @@ public class WordleGameApp {
         return new GameRunnerBuilder()
                 // The guesser (created each time newly for each game)
                 .guesser(() -> new RegexBasedGuesser())
+                .guesser(() -> new SimpleGuesser())
+                .guesser(() -> new RandomGuesser())
 
                 // Solutions that are visible to guesser
                 .solutionsVisibleToGuesser(solutions)
@@ -35,11 +42,17 @@ public class WordleGameApp {
                 // Accepter based on the accepted words
                 .accepter(new CollectionAccepter(accepted))
 
-                .addObserver(new ConsoleMinimalPrinter()) // Prints only the results
-                .addObserver(new ScoringObserver())       // Prints the results and calculates
+                .addObserver(new Scorer(
+                        new ConsolePrettyPrinter(true),
+//                        new ConsoleMinimalPrinter(false, false, true, false),
+                        new AggregatedFullObserver(
+                                new ScorePrettyPrinter(),
+                                new Greeter()
+                        )
+                ))
 
                 .maxAttempts(6)                 // Max attempts per game
-                .runLimit(100)           // Total amount of games
+                .runLimit(9)           // Total amount of games
 
                 .matcher(new StandardMatcher()) // Word comparing strategy
                 .build();

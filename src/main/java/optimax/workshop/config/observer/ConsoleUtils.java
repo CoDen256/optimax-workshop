@@ -87,7 +87,7 @@ public class ConsoleUtils {
         return sb.toString();
     }
 
-    public static String formatResult(Function<MatchType, String> matchFormat, String charFormat, MatchResult result) {
+    public static String formatResult(MatchResult result, String charFormat, Function<MatchType, String> matchFormat) {
         StringBuilder sb = new StringBuilder();
 
         for (Match match : result.getMatches()) {

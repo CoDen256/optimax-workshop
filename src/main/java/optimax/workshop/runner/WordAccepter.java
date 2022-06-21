@@ -14,4 +14,8 @@ public interface WordAccepter {
     default boolean isNotAccepted(Word word) {
         return !isAccepted(word);
     }
+
+    default String name(){
+        return getClass().getSimpleName();
+    }
 }

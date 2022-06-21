@@ -1,52 +1,53 @@
 package optimax.workshop.config.observer;
 
+import static optimax.workshop.config.observer.ConsoleUtils.formatResult;
+import static optimax.workshop.config.observer.ConsoleUtils.formatWord;
+import static optimax.workshop.config.observer.ConsoleUtils.getMatchColor;
 import static optimax.workshop.config.observer.ConsoleUtils.print;
 import static optimax.workshop.config.observer.ConsoleUtils.println;
 
-import optimax.workshop.core.Word;
+import java.util.stream.Collectors;
 import optimax.workshop.core.matcher.MatchResult;
-import optimax.workshop.runner.GameObserver;
-import optimax.workshop.runner.Guesser;
-import optimax.workshop.runner.WordAccepter;
+import optimax.workshop.stats.GameSnapshot;
 
 /**
  * @author Denys Chernyshov
  * @since 1.0
  */
-public class ConsoleMinimalPrinter implements GameObserver {
+public class ConsoleMinimalPrinter extends EmptyGameStateObserver {
 
-    private MatchResult result;
-    private Word solution;
-    private int count = 0;
+    private final boolean printGuesser;
+    private final boolean printGuessesNumber;
+    private final boolean printSolution;
+    private final boolean printGuesses;
 
-    @Override
-    public void onCreated(Word solution, Guesser guesser, WordAccepter accepter) {
-        this.solution = solution;
-        count++;
+    public ConsoleMinimalPrinter(boolean printSolution, boolean printGuessesNumber, boolean printGuesser, boolean printGuesses) {
+        this.printGuesser = printGuesser;
+        this.printGuessesNumber = printGuessesNumber;
+        this.printSolution = printSolution;
+        this.printGuesses = printGuesses;
     }
 
     @Override
-    public void onFinished(boolean solved) {
-        print("{wGame #%d} ", count);
-        println(solved ?  "{gSolved!}" : "{rFailed!}");
-//        print(" ");
-//        print(formatResult( t -> getMatchColor(t).toLowerCase(), "%c", result));
-//        print(":");
-//        println(formatWord("%c", solution, "{w", "}"));
-    }
-
-    @Override
-    public void onGuessExpected() {
-
-    }
-
-    @Override
-    public void onGuessSubmitted(Word guess, MatchResult result) {
-        this.result = result;
-    }
-
-    @Override
-    public void onGuessRejected(Word guess) {
-
+    public void onGameFinished(GameSnapshot game) {
+        print("{wRun #%-5d}", game.getIndex());
+        if (printGuesser) {
+            print("{w [}{g%s}{w] }", game.getGuesser().name());
+        }
+        print(game.isSolved() ? "{gSolved!}" : "{rFailed!}");
+        if (printGuessesNumber) {
+            print("\t({g%d} {wguesses})", game.getGuessesCount());
+        }
+        if (printSolution) {
+            print("\t" + formatWord("%c", game.getSolution(), "{g", "}"));
+        }
+        if (printGuesses) {
+            print("\t");
+            print(game.getMatches()
+                    .stream()
+                    .map(m -> formatResult(m, "%c", t -> getMatchColor(t).toLowerCase()))
+                    .collect(Collectors.joining(", ", "[", "]")));
+        }
+        println();
     }
 }

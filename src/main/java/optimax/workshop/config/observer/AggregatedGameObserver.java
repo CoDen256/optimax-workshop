@@ -11,22 +11,33 @@ import optimax.workshop.runner.WordAccepter;
  * @author Denys Chernyshov
  * @since 1.0
  */
-public class AggregatedObserver implements GameObserver {
+public class AggregatedGameObserver implements GameObserver {
 
     private final List<GameObserver> observers;
 
-    public AggregatedObserver(List<GameObserver> observers) {
+    public AggregatedGameObserver(List<GameObserver> observers) {
         this.observers = observers;
     }
 
     @Override
-    public void onCreated(Word solution, Guesser guesser, WordAccepter accepter) {
-        observers.forEach(o -> o.onCreated(solution, guesser, accepter));
+    public void onRunLaunched(int i) {
+        observers.forEach(s -> s.onRunLaunched(i));
     }
 
     @Override
-    public void onFinished(boolean solved) {
-        observers.forEach(o -> o.onFinished(solved));
+    public void onRunFinished() {
+        observers.forEach(GameObserver::onRunFinished);
+
+    }
+
+    @Override
+    public void onGameCreated(Word solution, Guesser guesser, WordAccepter accepter) {
+        observers.forEach(o -> o.onGameCreated(solution, guesser, accepter));
+    }
+
+    @Override
+    public void onGameFinished(boolean solved) {
+        observers.forEach(o -> o.onGameFinished(solved));
     }
 
     @Override

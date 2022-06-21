@@ -51,7 +51,7 @@ public class WordleRunner implements GameRunner {
         Word solution = generator.nextSolution();
 
         guesser.init(visibleSolutions, visibleAccepted);
-        observer.onCreated(solution, guesser, accepter);
+        observer.onGameCreated(solution, guesser, accepter);
 
         verifyGame(solution, maxAttempts);
         boolean isSolved = false;
@@ -61,7 +61,7 @@ public class WordleRunner implements GameRunner {
 
             isSolved = processGuess(solution, guess);
         }
-        observer.onFinished(isSolved);
+        observer.onGameFinished(isSolved);
     }
 
     private boolean processGuess(Word solution, Word guess) {

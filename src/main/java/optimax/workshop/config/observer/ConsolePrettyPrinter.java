@@ -6,70 +6,68 @@ import static optimax.workshop.config.observer.ConsoleUtils.print;
 import static optimax.workshop.config.observer.ConsoleUtils.println;
 import static optimax.workshop.config.observer.ConsoleUtils.repeated;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.matcher.MatchResult;
-import optimax.workshop.runner.GameObserver;
-import optimax.workshop.runner.Guesser;
-import optimax.workshop.runner.WordAccepter;
+import optimax.workshop.stats.GameSnapshot;
 
 /**
  * @author Denys Chernyshov
  * @since 1.0
  */
-public class ConsolePrettyPrinter implements GameObserver {
+public class ConsolePrettyPrinter extends EmptyGameStateObserver {
 
-    private int guessCount = 0;
 
-    private final Collection<MatchResult> results = new ArrayList<>();
-    private Word solution;
+    private final boolean printSolution;
 
-    @Override
-    public void onCreated(Word solution, Guesser guesser, WordAccepter accepter) {
-        guessCount = 0;
-        results.clear();
-        println(repeated("-", 30, "\n{w", "}"));
-        println("{w" + "Worlde game has started!}".toUpperCase());
-        println("Guesser: {g`%s`}", guesser.getClass().getSimpleName());
-        println("Accepting by: {g`%s`}\n", accepter.getClass().getSimpleName());
-        this.solution = solution;
+    public ConsolePrettyPrinter(boolean printSolution) {
+        this.printSolution = printSolution;
     }
 
     @Override
-    public void onGuessExpected() {
-        println("\nExpecting {gGuess #%d}...", ++guessCount);
+    public void onGameCreated(GameSnapshot game) {
+        print(repeated("-", 15));
+        print("{w" + "Worlde Game #%d}",  game.getIndex());
+        print(repeated("-", 15));
+        println();
+        println("Guesser: {g`%s`}", game.getGuesser().name());
+        println("Accepting by: {y`%s`}", game.getAccepter().name());
+        if (printSolution){
+            println("{ySOLUTION: {g%s}", game.getSolution().toString().toUpperCase());
+        }
     }
 
     @Override
-    public void onGuessSubmitted(Word guess, MatchResult result) {
+    public void onGuessExpected(GameSnapshot game) {
+        println("\nExpecting {gGuess #%d}...", game.getGuessesCount());
+    }
+
+    @Override
+    public void onGuessSubmitted(GameSnapshot snapshot) {
         println("Guess {gsubmitted}:");
-        printResult(result);
-        results.add(result);
+        printResult(snapshot.getLastMatch());
     }
 
     private void printResult(MatchResult result) {
-        println(formatResult(ConsoleUtils::getMatchColor, "{b %c ", result));
+        println(formatResult(result, "{b %c ", ConsoleUtils::getMatchColor));
     }
 
-
     @Override
-    public void onGuessRejected(Word guess) {
-        print("{rGuess #%d rejected}:\n", guessCount--);
+    public void onGuessRejected(Word guess, GameSnapshot snapshot) {
+        print("{rGuess #%d rejected}:\n", snapshot.getGuessesCount());
         printWord(guess, "{R{b", "}");
     }
 
 
     @Override
-    public void onFinished(boolean solved) {
-        if (solved) {
+    public void onGameFinished(GameSnapshot game) {
+        if (game.isSolved()) {
             println("{gSolved!}");
         } else {
             println("{rFailed!}");
         }
-        results.forEach(this::printResult);
+        game.getMatches().forEach(this::printResult);
         println("{gSolution:");
-        printWord(solution, "{G{b", "}");
+        printWord(game.getSolution(), "{G{b", "}");
     }
 
     private void printWord(Word word, String prefix, String suffix) {
