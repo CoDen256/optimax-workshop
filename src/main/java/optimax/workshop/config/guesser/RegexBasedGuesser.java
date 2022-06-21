@@ -36,6 +36,9 @@ public class RegexBasedGuesser implements Guesser {
     private final Random random = new Random();
     private final WordMatcher matcher;
 
+    private static Word opener = null;
+
+    private boolean started = false;
     public RegexBasedGuesser(WordMatcher matcher) {
         this.matcher = matcher;
     }
@@ -48,9 +51,16 @@ public class RegexBasedGuesser implements Guesser {
 
     @Override
     public Word nextGuess() {
+        if (!started){
+            started = true;
+            if (opener != null){
+                return opener;
+            }
+        }
         List<String> matches = getMatches().collect(Collectors.toList());
         System.out.println("Matches: "+matches);
-        if (matches.size() == 1) return new Word(matches.get(0));
+        if (matches.size() <= 2) return new Word(matches.get(0));
+        if (opener != null) return  opener;
         List<GroupSet> groupSets = new ArrayList<>();
         for (String accepted : accepted) {
             GroupSet groupSet = new GroupSet(accepted);
@@ -76,8 +86,13 @@ public class RegexBasedGuesser implements Guesser {
             });
         });
 //        System.out.println(matches);
-        List<GroupSet> sorted = groupSets.stream().sorted(Comparator.comparing(GroupSet::size).reversed()).collect(Collectors.toList());
-        return new Word(groupSets.stream().max(Comparator.comparing(GroupSet::size)).get().word);
+//        List<GroupSet> sorted = groupSets.stream().sorted(Comparator.comparing(GroupSet::size).reversed()).collect(Collectors.toList());
+        GroupSet bestGroupSet = groupSets.stream().max(Comparator.comparing(GroupSet::size)).get();
+        Word guess = new Word(bestGroupSet.word);
+        if (opener == null){
+            opener = guess;
+        }
+        return guess;
     }
 
     @Override

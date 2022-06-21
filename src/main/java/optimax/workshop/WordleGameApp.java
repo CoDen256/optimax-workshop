@@ -21,7 +21,7 @@ public class WordleGameApp {
         createRunner().run();
     }
     private static GameRunner createRunner() {
-        Collection<Word> solutions = FileWordLoader.load(path("/words-mini.txt"));
+        Collection<Word> solutions = FileWordLoader.load(path("/wordle.txt"));
         Collection<Word> accepted = FileWordLoader.load(path("/words.txt"));
         return new GameRunnerBuilder()
                 // The guesser (created each time newly for each game)
