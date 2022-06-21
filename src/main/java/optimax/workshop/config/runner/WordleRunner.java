@@ -48,32 +48,28 @@ public class WordleRunner implements GameRunner {
     }
 
     public void run(){
-        Word solution = initializeGame();
+        Word solution = generator.nextSolution();
+
+        guesser.init(visibleSolutions, visibleAccepted);
+        observer.onCreated(solution, guesser, accepter);
+
         verifyGame(solution, maxAttempts);
         boolean isSolved = false;
         for (int i = 0; i < maxAttempts && !isSolved; i++) {
-            Word guess = nextGuess();
+            observer.onGuessExpected();
+            Word guess = guesser.nextGuess();
+
             isSolved = processGuess(solution, guess);
         }
         observer.onFinished(isSolved);
     }
 
     private boolean processGuess(Word solution, Word guess) {
-        if (accepter.isNotAccepted(guess))
-            return rejectGuess(guess);
+        if (accepter.isNotAccepted(guess)) {
+            observer.onGuessRejected(guess);
+            return false;
+        }
         return submitGuess(solution, guess);
-    }
-
-    private Word initializeGame() {
-        Word solution = generator.nextSolution();
-        guesser.init(visibleSolutions, visibleAccepted);
-        observer.onCreated(solution, guesser, accepter);
-        return solution;
-    }
-
-    private Word nextGuess() {
-        observer.onGuessExpected();
-        return guesser.nextGuess();
     }
 
     private boolean submitGuess(Word solution, Word guess) {
@@ -81,11 +77,6 @@ public class WordleRunner implements GameRunner {
         observer.onGuessSubmitted(guess, result);
         guesser.match(guess, result);
         return isSolved(result);
-    }
-
-    private boolean rejectGuess(Word guess) {
-        observer.onGuessRejected(guess);
-        return false;
     }
 
     private boolean isSolved(MatchResult result){

@@ -6,6 +6,7 @@ import optimax.workshop.config.accepter.CollectionAccepter;
 import optimax.workshop.config.generator.CollectionSolutionGenerator;
 import optimax.workshop.config.guesser.RegexBasedGuesser;
 import optimax.workshop.config.matcher.StandardMatcher;
+import optimax.workshop.config.observer.ConsoleMinimalPrinter;
 import optimax.workshop.config.observer.ConsolePrettyPrinter;
 import optimax.workshop.config.observer.ScoringObserver;
 import optimax.workshop.config.runner.GameRunnerBuilder;
@@ -34,7 +35,7 @@ public class WordleGameApp {
                 // Accepter based on the accepted words
                 .accepter(new CollectionAccepter(accepted))
 
-                .addObserver(new ConsolePrettyPrinter()) // Prints only the results
+                .addObserver(new ConsoleMinimalPrinter()) // Prints only the results
                 .addObserver(new ScoringObserver())       // Prints the results and calculates
 
                 .maxAttempts(6)                 // Max attempts per game
