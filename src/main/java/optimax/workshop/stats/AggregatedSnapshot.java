@@ -4,11 +4,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AggregatedSnapshots {
+public class AggregatedSnapshot {
 
     private final List<GameSnapshot> stats;
 
-    public AggregatedSnapshots(List<GameSnapshot> stats) {
+    public AggregatedSnapshot(List<GameSnapshot> stats) {
         this.stats = stats;
     }
 
@@ -30,6 +30,14 @@ public class AggregatedSnapshots {
 
     public int getGamesCount(){
         return stats.size();
+    }
+
+    public long getTotalMillis(){
+        return stats.stream().mapToLong(GameSnapshot::getMillis).sum();
+    }
+
+    public double getAvgMillis(){
+        return stats.stream().mapToLong(GameSnapshot::getMillis).average().orElse(0);
     }
 
     public List<GameSnapshot> getStats() {

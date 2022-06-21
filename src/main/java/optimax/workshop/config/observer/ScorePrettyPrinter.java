@@ -11,20 +11,20 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import optimax.workshop.runner.FullObserver;
-import optimax.workshop.stats.AggregatedSnapshots;
+import optimax.workshop.stats.AggregatedSnapshot;
 import optimax.workshop.stats.GameSnapshot;
 
 public class ScorePrettyPrinter implements FullObserver {
     public static final int FIRST_COLUMN_WIDTH = 32;
-    public static final int SECOND_COLUMN_WIDTH = 10;
+    public static final int SECOND_COLUMN_WIDTH = 12;
     public static final String BORDER = formatBorder(FIRST_COLUMN_WIDTH, SECOND_COLUMN_WIDTH);
-    public static final String TITLE_FORMAT = "| {g%-41s} |";
+    public static final String TITLE_FORMAT = "| {g%-43s} |";
 
-    public static final Comparator<Map.Entry<String, AggregatedSnapshots>> WIN_RATE_COMPARATOR = comparingDouble(
-            (Map.Entry<String, AggregatedSnapshots> entry) -> entry.getValue().getWinRate()
+    public static final Comparator<Map.Entry<String, AggregatedSnapshot>> WIN_RATE_COMPARATOR = comparingDouble(
+            (Map.Entry<String, AggregatedSnapshot> entry) -> entry.getValue().getWinRate()
     ).reversed();
 
-    public static final Comparator<Map.Entry<String, AggregatedSnapshots>> AVG_GUESSES_COMPARATOR = comparingDouble(
+    public static final Comparator<Map.Entry<String, AggregatedSnapshot>> AVG_GUESSES_COMPARATOR = comparingDouble(
             entry -> entry.getValue().getAverageGuessesPerGame()
     );
 
@@ -32,13 +32,13 @@ public class ScorePrettyPrinter implements FullObserver {
     public void onRunLaunched(int totalRuns) {}
 
     @Override
-    public void onRunFinished(AggregatedSnapshots aggregatedSnapshots) {
-        printScores(aggregatedSnapshots);
+    public void onRunFinished(AggregatedSnapshot aggregatedSnapshot) {
+        printScores(aggregatedSnapshot);
     }
 
-    public void printScores(AggregatedSnapshots aggregatedSnapshots) {
-        printTotalGamesHeader(aggregatedSnapshots);
-        groupByGuesser(aggregatedSnapshots)
+    public void printScores(AggregatedSnapshot aggregatedSnapshot) {
+        printTotalGamesHeader(aggregatedSnapshot);
+        groupByGuesser(aggregatedSnapshot)
                 .entrySet()
                 .stream()
                 .map(this::aggregate)
@@ -62,9 +62,9 @@ public class ScorePrettyPrinter implements FullObserver {
         println(String.format(TITLE_FORMAT, title));
     }
 
-    private void printTotalGamesHeader(AggregatedSnapshots aggregatedSnapshots) {
+    private void printTotalGamesHeader(AggregatedSnapshot aggregatedSnapshot) {
         println(BORDER);
-        printTitle(String.format("TOTAL GAMES: %d", aggregatedSnapshots.getGamesCount()));
+        printTitle(String.format("TOTAL GAMES: %d", aggregatedSnapshot.getGamesCount()));
         printFooter();
     }
 
@@ -73,20 +73,21 @@ public class ScorePrettyPrinter implements FullObserver {
         println();
     }
 
-    private void printStats(AggregatedSnapshots stats) {
-        println("| {w%-30s} | {g%-8d} |", "Total Games", stats.getGamesCount());
-        println("| {w%-30s} | {g%-6.2f %% }|", "Win Rate", stats.getWinRate());
-        println("| {w%-30s} | {g%-8.2f }|", "Avg. guesses per game", stats.getAverageGuessesPerGame());
-        println("| {w%-30s} | {g%-8d }|", "Min. guesses per game", stats.getMinGuessesPerGame());
+    private void printStats(AggregatedSnapshot stats) {
+        println("| {w%-30s} |{g %-10d} |", "Total Games", stats.getGamesCount());
+        println("| {w%-30s} |{g %-8.2f %% }|", "Win Rate", stats.getWinRate());
+        println("| {w%-30s} |{g %-10.2f }|", "Avg. guesses per game", stats.getAverageGuessesPerGame());
+        println("| {w%-30s} |{g %-10d }|", "Min. guesses per game", stats.getMinGuessesPerGame());
+        println("| {w%-30s} |{g %-8.4f s }|", "Avg. time per game", stats.getAvgMillis()/100.f);
     }
 
-    private Map<String, List<GameSnapshot>> groupByGuesser(AggregatedSnapshots byGuesser) {
+    private Map<String, List<GameSnapshot>> groupByGuesser(AggregatedSnapshot byGuesser) {
         return byGuesser.getStats()
                 .stream().collect(groupingBy(s -> s.getGuesser().name()));
     }
 
-    private Map.Entry<String, AggregatedSnapshots> aggregate(Map.Entry<String, List<GameSnapshot>> entry) {
-        return Map.entry(entry.getKey(), new AggregatedSnapshots(entry.getValue()));
+    private Map.Entry<String, AggregatedSnapshot> aggregate(Map.Entry<String, List<GameSnapshot>> entry) {
+        return Map.entry(entry.getKey(), new AggregatedSnapshot(entry.getValue()));
     }
     private static String formatBorder(int firstColumnWidth, int secondColumnWidth) {
         return String.format("+%s+%s+", repeated("-", firstColumnWidth), repeated("-", secondColumnWidth));

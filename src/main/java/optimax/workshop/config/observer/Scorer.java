@@ -9,7 +9,7 @@ import optimax.workshop.runner.GameObserver;
 import optimax.workshop.runner.GameStateObserver;
 import optimax.workshop.runner.Guesser;
 import optimax.workshop.runner.WordAccepter;
-import optimax.workshop.stats.AggregatedSnapshots;
+import optimax.workshop.stats.AggregatedSnapshot;
 import optimax.workshop.stats.GameSnapshot;
 
 /**
@@ -24,6 +24,8 @@ public class Scorer implements GameObserver {
     private GameSnapshot gameSnapshot;
     private int gameIndex = 0;
 
+    private long millisStarted = 0;
+
     public Scorer(GameStateObserver observer, FullObserver fullObserver) {
         this.observer = observer;
         this.fullObserver = fullObserver;
@@ -34,11 +36,12 @@ public class Scorer implements GameObserver {
         gameIndex++;
         gameSnapshot = new GameSnapshot(solution, gameIndex, guesser, accepter);
         observer.onGameCreated(gameSnapshot);
+        millisStarted = System.currentTimeMillis();
     }
 
     @Override
     public void onGameFinished(boolean solved) {
-        gameSnapshot = gameSnapshot.setSolved(solved);
+        gameSnapshot = gameSnapshot.setSolved(solved, System.currentTimeMillis() - millisStarted);
         recordedSnapshots.add(gameSnapshot);
         observer.onGameFinished(gameSnapshot);
     }
@@ -65,6 +68,6 @@ public class Scorer implements GameObserver {
     }
     @Override
     public void onRunFinished() {
-        fullObserver.onRunFinished(new AggregatedSnapshots(recordedSnapshots));
+        fullObserver.onRunFinished(new AggregatedSnapshot(recordedSnapshots));
     }
 }

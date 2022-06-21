@@ -33,6 +33,8 @@ public class RegexBasedGuesser implements Guesser {
     private final List<String> wordList = new ArrayList<>();
     private final List<String> accepted = new ArrayList<>();
 
+    private final List<String> guesses = new ArrayList<>();
+
     private final Random random = new Random();
     private final WordMatcher matcher;
 
@@ -60,9 +62,9 @@ public class RegexBasedGuesser implements Guesser {
         List<String> matches = getMatches().collect(Collectors.toList());
         System.out.println("Matches: "+matches);
         if (matches.size() <= 2) return new Word(matches.get(0));
-        if (opener != null) return  opener;
         List<GroupSet> groupSets = new ArrayList<>();
         for (String accepted : accepted) {
+            if (guesses.contains(accepted)) continue;
             GroupSet groupSet = new GroupSet(accepted);
             Map<MatchResult, List<String>> groups = new HashMap<>();
             for (String match : matches) {
@@ -97,6 +99,7 @@ public class RegexBasedGuesser implements Guesser {
 
     @Override
     public void match(Word guess, MatchResult result) {
+        guesses.add(guess.toString());
         updateRegex(result);
     }
 

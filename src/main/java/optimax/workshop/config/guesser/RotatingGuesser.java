@@ -1,7 +1,6 @@
 package optimax.workshop.config.guesser;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 import optimax.workshop.runner.Guesser;

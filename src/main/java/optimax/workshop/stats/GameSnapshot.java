@@ -22,6 +22,7 @@ public class GameSnapshot {
 
     private final int gameIndex;
 
+    private final long millis;
     private final Guesser guesser;
     private final WordAccepter accepter;
 
@@ -31,15 +32,17 @@ public class GameSnapshot {
         this.isSolved = false;
         this.guesser = guesser;
         this.accepter = accepter;
+        this.millis = 0;
     }
 
     private GameSnapshot(Word solution, int gameIndex, Guesser guesser, WordAccepter accepter,
-                         boolean isSolved, List<Word> guesses, List<MatchResult> matches) {
+                         boolean isSolved, long millis, List<Word> guesses, List<MatchResult> matches) {
         this.solution = solution;
         this.isSolved = isSolved;
         this.gameIndex = gameIndex;
         this.guesser = guesser;
         this.accepter = accepter;
+        this.millis = millis;
         this.guesses.addAll(guesses);
         this.matches.addAll(matches);
         if (guesses.size() != matches.size()) {
@@ -68,6 +71,10 @@ public class GameSnapshot {
         return guesses.get(guesses.size()-1);
     }
 
+    public long getMillis() {
+        return millis;
+    }
+
     public MatchResult getLastMatch(){
         return matches.get(matches.size() - 1);
     }
@@ -93,10 +100,10 @@ public class GameSnapshot {
         newMatches.add(match);
         List<Word> newGuesses = new ArrayList<>(getGuesses());
         newGuesses.add(guess);
-        return new GameSnapshot(solution, gameIndex, guesser, accepter, isSolved, newGuesses, newMatches);
+        return new GameSnapshot(solution, gameIndex, guesser, accepter, isSolved, millis, newGuesses, newMatches);
     }
 
-    public GameSnapshot setSolved(boolean isSolved) {
-        return new GameSnapshot(solution, gameIndex, guesser, accepter, isSolved, guesses, matches);
+    public GameSnapshot setSolved(boolean isSolved, long millis) {
+        return new GameSnapshot(solution, gameIndex, guesser, accepter, isSolved,millis, guesses, matches);
     }
 }

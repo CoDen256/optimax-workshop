@@ -1,9 +1,9 @@
 package optimax.workshop.runner;
 
-import optimax.workshop.stats.AggregatedSnapshots;
+import optimax.workshop.stats.AggregatedSnapshot;
 
 public interface FullObserver {
     void onRunLaunched(int totalRuns);
-    void onRunFinished(AggregatedSnapshots aggregatedSnapshots);
+    void onRunFinished(AggregatedSnapshot aggregatedSnapshot);
 
 }
