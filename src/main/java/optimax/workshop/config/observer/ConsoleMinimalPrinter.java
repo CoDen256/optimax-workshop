@@ -6,6 +6,8 @@ import static optimax.workshop.config.observer.ConsoleUtils.getMatchColor;
 import static optimax.workshop.config.observer.ConsoleUtils.print;
 import static optimax.workshop.config.observer.ConsoleUtils.println;
 
+import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.stream.Collectors;
 import optimax.workshop.core.Word;
 import optimax.workshop.run.single.GameObserver;
@@ -21,21 +23,26 @@ import optimax.workshop.run.single.SingleWordleRunner;
  */
 public class ConsoleMinimalPrinter implements GameObserver {
 
-    private final boolean printGuesser;
-    private final boolean printGuessesNumber;
-    private final boolean printSolution;
-    private final boolean printGuesses;
+    private final EnumSet<Config> config;
 
-    public ConsoleMinimalPrinter(boolean printSolution, boolean printGuessesNumber, boolean printGuesser, boolean printGuesses) {
-        this.printGuesser = printGuesser;
-        this.printGuessesNumber = printGuessesNumber;
-        this.printSolution = printSolution;
-        this.printGuesses = printGuesses;
+    public enum Config {
+        PRINT_GUESSER, // print the guesser that was used
+        PRINT_SOLUTION,  // print the solution
+        PRINT_GUESSES, // print all the submitted guesses
+        PRINT_GUESSES_NUM // print the number of guesses
+    }
+
+    public ConsoleMinimalPrinter(Config... config) {
+        this.config = EnumSet.noneOf(Config.class);
+        this.config.addAll(Arrays.asList(config));
     }
 
     @Override
     public void onGameCreated(GameSnapshot snapshot) {
-
+        print("{wRun #%-5d}", snapshot.getIndex());
+        if (isGuesserPrinted()) {
+            print("{w [}{g%s}{w] }", snapshot.getGuesser().name());
+        }
     }
 
     @Override
@@ -55,18 +62,14 @@ public class ConsoleMinimalPrinter implements GameObserver {
 
     @Override
     public void onGameFinished(GameSnapshot game) {
-        print("{wRun #%-5d}", game.getIndex());
-        if (printGuesser) {
-            print("{w [}{g%s}{w] }", game.getGuesser().name());
-        }
         print(game.isSolved() ? "{gSolved!}" : "{rFailed!}");
-        if (printGuessesNumber) {
+        if (isGuessesNumPrinted()) {
             print("\t({g%d} {wguesses})", game.getGuessesCount());
         }
-        if (printSolution) {
+        if (isSolutionPrinted()) {
             print("\t" + formatWord("%c", game.getSolution(), "{g", "}"));
         }
-        if (printGuesses) {
+        if (isGuessesListPrinted()) {
             print("\t");
             print(game.getMatches()
                     .stream()
@@ -74,5 +77,21 @@ public class ConsoleMinimalPrinter implements GameObserver {
                     .collect(Collectors.joining(", ", "[", "]")));
         }
         println();
+    }
+
+    private boolean isGuesserPrinted() {
+        return config.contains(Config.PRINT_GUESSER);
+    }
+
+    private boolean isGuessesListPrinted() {
+        return config.contains(Config.PRINT_GUESSES);
+    }
+
+    private boolean isGuessesNumPrinted() {
+        return config.contains(Config.PRINT_GUESSES_NUM);
+    }
+
+    private boolean isSolutionPrinted() {
+        return config.contains(Config.PRINT_SOLUTION);
     }
 }

@@ -6,6 +6,8 @@ import static optimax.workshop.config.observer.ConsoleUtils.print;
 import static optimax.workshop.config.observer.ConsoleUtils.println;
 import static optimax.workshop.config.observer.ConsoleUtils.repeated;
 
+import java.util.Arrays;
+import java.util.EnumSet;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.match.MatchResult;
 import optimax.workshop.run.single.GameObserver;
@@ -21,10 +23,15 @@ import optimax.workshop.run.single.SingleWordleRunner;
  */
 public class ConsoleFullPrinter implements GameObserver {
 
-    private final boolean printSolution;
+    private final EnumSet<Config> config;
 
-    public ConsoleFullPrinter(boolean printSolution) {
-        this.printSolution = printSolution;
+    public enum Config {
+        PRINT_SOLUTION // print solution at the start of the game
+    }
+
+    public ConsoleFullPrinter(Config... config) {
+        this.config = EnumSet.noneOf(Config.class);
+        this.config.addAll(Arrays.asList(config));
     }
 
     @Override
@@ -35,7 +42,7 @@ public class ConsoleFullPrinter implements GameObserver {
         println();
         println("Guesser: {g`%s`}", game.getGuesser().name());
         println("Accepting by: {y`%s`}", game.getAccepter().name());
-        if (printSolution){
+        if (config.contains(Config.PRINT_SOLUTION)){
             println("{ySOLUTION: {g%s}", game.getSolution().toString().toUpperCase());
         }
     }

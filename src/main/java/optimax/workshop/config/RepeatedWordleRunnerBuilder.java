@@ -42,6 +42,8 @@ public class RepeatedWordleRunnerBuilder {
     private final List<Supplier<Guesser>> guessers = new ArrayList<>();
     private int limit;
 
+    private boolean failOnRejected = false;
+
     /**
      * Set the accepted words, that are visible to the {@link Guesser}. May differ
      * from the actual accepted words set used in the {@link WordAccepter}
@@ -157,6 +159,11 @@ public class RepeatedWordleRunnerBuilder {
         return this;
     }
 
+    public RepeatedWordleRunnerBuilder failOnRejected(boolean failOnRejected){
+        this.failOnRejected = failOnRejected;
+        return this;
+    }
+
     /**
      * Builds the {@link WordleRunner} that runs specific number of times and creates each game
      * based on the previously set parameters
@@ -170,6 +177,7 @@ public class RepeatedWordleRunnerBuilder {
     private WordleRunner buildSingleRunner(GameLifecycleObserver observer, Supplier<Guesser> guesserFactory) {
         return new SingleWordleRunner(
                 maxAttempts,
+                failOnRejected,
                 requireNonNull(visibleSolutions, "You have to set visible to guesser solutions"),
                 requireNonNull(visibleAccepted, "You have to set visible to accepted words"),
                 requireNonNull(generator, "You have to set solution generator (e.g. accepter(new CollectionSolutionGenerator(src))"),

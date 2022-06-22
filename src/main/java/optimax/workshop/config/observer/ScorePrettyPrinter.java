@@ -85,7 +85,7 @@ public class ScorePrettyPrinter implements AppObserver {
         println("| {w%-30s} |{g %-8.2f %% }|", "Win Rate", stats.getWinRate());
         println("| {w%-30s} |{g %-10.2f }|", "Avg. guesses per game", stats.getAverageGuessesPerGame());
         println("| {w%-30s} |{g %-10d }|", "Min. guesses per game", stats.getMinGuessesPerGame());
-        println("| {w%-30s} |{g %-8.4f s }|", "Avg. time per game", stats.getAvgMillis()/100.f);
+        println("| {w%-30s} |{g %-8.4f s }|", "Avg. time per game", stats.getAvgMillis()/1000.f);
     }
 
     private Map<String, List<GameSnapshot>> groupByGuesser(AggregatedSnapshot byGuesser) {

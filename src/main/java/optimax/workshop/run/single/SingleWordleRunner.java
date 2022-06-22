@@ -3,6 +3,7 @@ package optimax.workshop.run.single;
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.match.MatchResult;
@@ -30,8 +31,10 @@ public class SingleWordleRunner implements WordleRunner {
     private final Guesser guesser;
     private final GameLifecycleObserver observer;
     private final WordMatcher matcher;
+    private final boolean failOnRejected;
 
     public SingleWordleRunner(int maxAttempts,
+                              boolean failOnRejected,
                               Collection<Word> visibleSolutions,
                               Collection<Word> visibleAccepted,
                               SolutionGenerator generator,
@@ -40,9 +43,10 @@ public class SingleWordleRunner implements WordleRunner {
                               GameLifecycleObserver observer,
                               WordMatcher matcher) {
         this.maxAttempts = maxAttempts;
+        this.failOnRejected = failOnRejected;
         this.generator = requireNonNull(generator);
-        this.visibleSolutions = requireNonNull(visibleSolutions);
-        this.visibleAccepted = requireNonNull(visibleAccepted);
+        this.visibleSolutions = new ArrayList<>(requireNonNull(visibleSolutions));
+        this.visibleAccepted = new ArrayList<>(requireNonNull(visibleAccepted));
         this.matcher = requireNonNull(matcher);
         this.observer = requireNonNull(observer);
         this.guesser = requireNonNull(guesser);
@@ -64,6 +68,8 @@ public class SingleWordleRunner implements WordleRunner {
 
             if (accepter.isNotAccepted(guess)) {
                 observer.onGuessRejected(guess);
+                if (failOnRejected)
+                    throw new IllegalStateException(String.format("Guesser %s has submitted invalid guess %s", guesser.name(), guess));
             } else {
                 isSolved = submitGuess(solution, guess);
                 attempt++;

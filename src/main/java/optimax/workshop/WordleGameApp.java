@@ -7,9 +7,9 @@ import optimax.workshop.config.FileWordLoader;
 import optimax.workshop.config.RepeatedWordleRunnerBuilder;
 import optimax.workshop.config.accepter.CollectionAccepter;
 import optimax.workshop.config.generator.CollectionSolutionGenerator;
-import optimax.workshop.config.guesser.RandomGuesser;
+import optimax.workshop.config.guesser.CategoryDivisionGuesser;
 import optimax.workshop.config.guesser.SimpleGuesser;
-import optimax.workshop.config.observer.ConsoleMinimalPrinter;
+import optimax.workshop.config.observer.ConsoleFullPrinter;
 import optimax.workshop.config.observer.ScorePrettyPrinter;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.match.StandardMatcher;
@@ -23,13 +23,13 @@ public class WordleGameApp {
 
     private static WordleRunner createRunner() {
         // The solutions source
-        Collection<Word> solutions = FileWordLoader.load(path("/words-mini.txt"));
+        Collection<Word> solutions = FileWordLoader.load(path("/wordle.txt"));
         // The accepted words
-        Collection<Word> accepted = FileWordLoader.load(path("/words-distinct.txt"));
+        Collection<Word> accepted = FileWordLoader.load(path("/wordle.txt"));
         return new RepeatedWordleRunnerBuilder()
                 // The guesser (created each time newly for each game)
-                .addGuesser(() -> new SimpleGuesser())
-                .addGuesser(() -> new RandomGuesser())
+                .addGuesser(() -> new GuesserImpl())
+//                .addGuesser(() -> new GuesserImpl()) // add more guessers
 
                 // Solutions that are visible to the guessers
                 .solutionsVisibleToGuesser(solutions)
@@ -42,13 +42,14 @@ public class WordleGameApp {
                 .accepter(new CollectionAccepter(accepted))
 
                 .observer(new ScorePrettyPrinter())
-                .observer(new ConsoleMinimalPrinter(false, false, true, false))
-//                .observer(new ConsoleFullPrinter(true))
+//                .observer(new ConsoleMinimalPrinter(PRINT_GUESSER, PRINT_GUESSES_NUM)) // for multiple guessers
+                .observer(new ConsoleFullPrinter(ConsoleFullPrinter.Config.PRINT_SOLUTION)) // for single guesser
 
                 .maxAttempts(6)            // Max attempts per game
-                .runLimit(1000)           // Total amount of games
+                .runLimit(10)           // Total amount of games
 
                 .matcher(new StandardMatcher()) // Word comparing/matching strategy
+                .failOnRejected(true) // fail if the guesser submits a word that was not accepted
                 .build();
     }
 

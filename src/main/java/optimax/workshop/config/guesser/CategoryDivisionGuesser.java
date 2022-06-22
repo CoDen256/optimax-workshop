@@ -7,56 +7,51 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import optimax.workshop.core.match.Match;
+import optimax.workshop.core.match.MatchType;
 import optimax.workshop.core.match.StandardMatcher;
 import optimax.workshop.core.Word;
-import optimax.workshop.core.match.Match;
 import optimax.workshop.core.match.MatchResult;
-import optimax.workshop.core.match.MatchType;
 import optimax.workshop.guesser.Guesser;
 import optimax.workshop.core.match.WordMatcher;
 
 /**
- * The {@link CategoryDivisionGuesser}
+ *
  * @author Denys Chernyshov
  * @since 1.0
  */
 public class CategoryDivisionGuesser implements Guesser {
 
-    public static final String MATCH_ANY_LETTER_REGEX = "[ABCDEFGHIJKLMNOPQRSTUVWXYZ]";
-
-    private final List<String> regexList = initializeRegex();
-
-    private final List<Character> presentLetters = new ArrayList<>();
-
-    private final List<String> wordList = new ArrayList<>();
-    private final List<String> accepted = new ArrayList<>();
-
+    private final List<String> solutions = new ArrayList<>();
+    private final List<String> acceptedWords = new ArrayList<>();
     private final List<String> guesses = new ArrayList<>();
 
-    private final Random random = new Random();
-    private final WordMatcher matcher;
-    public CategoryDivisionGuesser() {
-        this.matcher = new StandardMatcher();
-    }
+    private final WordMatcher matcher = new StandardMatcher();
+
+    private final RegexFilter filter = new RegexFilter();
 
     @Override
     public void init(Collection<Word> solutions, Collection<Word> accepted) {
-        wordList.addAll(solutions.stream().map(Word::toString).collect(Collectors.toList()));
-        this.accepted.addAll(accepted.stream().map(Word::toString).collect(Collectors.toList()));
+        this.solutions.addAll(wordsToString(solutions));
+        this.acceptedWords.addAll(wordsToString(accepted));
+        filter.init(this.solutions);
+    }
+
+    private List<String> wordsToString(Collection<Word> solutions) {
+        return solutions.stream().map(Word::toString).collect(Collectors.toList());
     }
 
     @Override
     public Word nextGuess() {
-        List<String> matches = getMatches().collect(Collectors.toList());
-        System.out.println("Matches: "+matches);
-        if (matches.size() <= 2) return new Word(matches.get(0));
+        List<String> matches = getAllMatches();
+
+        if (containsOnlyTwoPossibleMatches(matches)) return new Word(matches.get(0));
+        if (guesses.isEmpty()) return new Word("trace");
+
         List<GroupSet> groupSets = new ArrayList<>();
-        for (String accepted : accepted) {
-            if (guesses.contains(accepted)) continue;
+        for (String accepted : acceptedWords) {
+            if (alreadyGuessed(accepted)) continue;
             GroupSet groupSet = new GroupSet(accepted);
             Map<MatchResult, List<String>> groups = new HashMap<>();
             for (String match : matches) {
@@ -73,93 +68,31 @@ public class CategoryDivisionGuesser implements Guesser {
             groupSets.add(groupSet);
         }
 
-        groupSets.forEach(set -> {
-//            System.out.printf("%n%nWord: %s%n", set.word);
-            set.groups.forEach(group  -> {
-//                System.out.printf("%nGroup:%s%n%s%n", group.match, group.words);
-            });
-        });
-//        System.out.println(matches);
-//        List<GroupSet> sorted = groupSets.stream().sorted(Comparator.comparing(GroupSet::size).reversed()).collect(Collectors.toList());
-        GroupSet bestGroupSet = groupSets.stream().max(Comparator.comparing(GroupSet::size)).get();
-        Word guess = new Word(bestGroupSet.word);
-        return guess;
+        GroupSet bestGroupSet = computeBestGroupSet(groupSets);
+        return new Word(bestGroupSet.word);
+    }
+
+    private boolean alreadyGuessed(String accepted) {
+        return guesses.contains(accepted);
+    }
+
+    private boolean containsOnlyTwoPossibleMatches(List<String> matches) {
+        return matches.size() <= 2;
+    }
+
+    private List<String> getAllMatches() {
+        return filter.getMatches().collect(Collectors.toList());
+    }
+
+    private GroupSet computeBestGroupSet(List<GroupSet> groupSets) {
+        return groupSets.stream().max(Comparator.comparing(GroupSet::size)).get();
     }
 
     @Override
     public void match(Word guess, MatchResult result) {
         guesses.add(guess.toString());
-        updateRegex(result);
+        filter.updateRegex(result);
     }
-
-    private Word fallback() {
-        return new Word(getRandomWord(wordList));
-    }
-
-    private <T> T getRandomWord(List<T> collection) {
-        return collection.get(random.nextInt(collection.size()));
-    }
-
-
-    private Stream<String> getMatches() {
-        String regex = String.join("", regexList);
-        return wordList.stream().filter(w -> w.matches(regex) && containsAllPresentLetters(w));
-    }
-
-    private boolean containsAllPresentLetters(String currentWord) {
-        return presentLetters.stream().allMatch(l -> currentWord.contains(l.toString()));
-    }
-
-    private void updateRegex(MatchResult feedback) {
-        for (Match match : feedback.getMatches()) {
-            int pos = match.getPos();
-            char currentChar = match.getLetter();
-            MatchType matchForChar = match.getType();
-
-            if (matchForChar == MatchType.ABSENT) {
-                updateRegexWithAbsent(pos, currentChar);
-            } else if (matchForChar == MatchType.WRONG) {
-                updateRegexWithWrong(pos, currentChar);
-            } else if (matchForChar == MatchType.CORRECT) {
-                updateRegexWithCorrect(pos, currentChar);
-            }
-        }
-    }
-
-    private void updateRegexWithCorrect(int pos, char currentChar) {
-        updateRegexForLetterAtPos(pos, s -> String.valueOf(currentChar));
-        presentLetters.add(currentChar);
-    }
-
-    private void updateRegexWithWrong(int pos, char currentChar) {
-        updateRegexForLetterAtPos(pos, s -> removeChar(s, currentChar));
-        presentLetters.add(currentChar);
-    }
-
-    private void updateRegexWithAbsent(int pos, char currentChar) {
-        if (presentLetters.contains(currentChar)) {
-            updateRegexForLetterAtPos(pos, s -> removeChar(s, currentChar));
-        } else {
-            for (int regexIndex = 0; regexIndex < 5; regexIndex++) {
-                updateRegexForLetterAtPos(regexIndex, s -> removeChar(s, currentChar));
-            }
-        }
-    }
-
-    private String removeChar(String origin, char c){
-        return origin.replace(String.valueOf(c), "");
-    }
-    private void updateRegexForLetterAtPos(int pos, UnaryOperator<String> regexUpdater){
-        regexList.set(pos, regexUpdater.apply(regexList.get(pos)));
-    }
-
-    private List<String> initializeRegex() {
-        return Stream
-                .generate(MATCH_ANY_LETTER_REGEX::toLowerCase)
-                .limit(5)
-                .collect(Collectors.toList());
-    }
-
 
     private static class GroupSet {
         private final String word;
