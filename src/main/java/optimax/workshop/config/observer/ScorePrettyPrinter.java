@@ -10,11 +10,16 @@ import static optimax.workshop.config.observer.ConsoleUtils.repeated;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import optimax.workshop.run.observer.FullObserver;
-import optimax.workshop.score.AggregatedSnapshot;
-import optimax.workshop.score.GameSnapshot;
+import optimax.workshop.guesser.Guesser;
+import optimax.workshop.run.multiple.AppObserver;
+import optimax.workshop.run.multiple.AggregatedSnapshot;
+import optimax.workshop.run.single.GameSnapshot;
 
-public class ScorePrettyPrinter implements FullObserver {
+/**
+ * Prints out the score/statistics based on the {@link AggregatedSnapshot} for
+ * each {@link Guesser}
+ */
+public class ScorePrettyPrinter implements AppObserver {
     public static final int FIRST_COLUMN_WIDTH = 32;
     public static final int SECOND_COLUMN_WIDTH = 12;
     public static final String BORDER = formatBorder(FIRST_COLUMN_WIDTH, SECOND_COLUMN_WIDTH);
@@ -29,10 +34,12 @@ public class ScorePrettyPrinter implements FullObserver {
     );
 
     @Override
-    public void onRunLaunched(int totalRuns) {}
+    public void onLaunched(int totalRuns) {
+
+    }
 
     @Override
-    public void onRunFinished(AggregatedSnapshot aggregatedSnapshot) {
+    public void onFinished(AggregatedSnapshot aggregatedSnapshot) {
         printScores(aggregatedSnapshot);
     }
 
@@ -82,7 +89,7 @@ public class ScorePrettyPrinter implements FullObserver {
     }
 
     private Map<String, List<GameSnapshot>> groupByGuesser(AggregatedSnapshot byGuesser) {
-        return byGuesser.getStats()
+        return byGuesser.getSnapshots()
                 .stream().collect(groupingBy(s -> s.getGuesser().name()));
     }
 

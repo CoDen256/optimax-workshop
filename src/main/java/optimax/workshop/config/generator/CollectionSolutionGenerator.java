@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import optimax.workshop.core.Word;
-import optimax.workshop.run.words.SolutionGenerator;
+import optimax.workshop.wordsource.SolutionGenerator;
 
 /**
  * A {@link SolutionGenerator} that generates next {@link Word} based

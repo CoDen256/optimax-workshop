@@ -2,7 +2,7 @@ package optimax.workshop.config.generator;
 
 import java.util.Random;
 import optimax.workshop.core.Word;
-import optimax.workshop.run.words.SolutionGenerator;
+import optimax.workshop.wordsource.SolutionGenerator;
 
 /**
  * A {@link SolutionGenerator} that generates a valid {@link Word}, that

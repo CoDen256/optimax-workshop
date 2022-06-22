@@ -1,4 +1,4 @@
-package optimax.workshop.run;
+package optimax.workshop.run.single;
 
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
@@ -7,13 +7,16 @@ import java.util.Collection;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.match.MatchResult;
 import optimax.workshop.core.match.MatchType;
-import optimax.workshop.run.observer.GameObserver;
-import optimax.workshop.run.guesser.Guesser;
-import optimax.workshop.run.words.SolutionGenerator;
-import optimax.workshop.run.words.WordAccepter;
+import optimax.workshop.run.WordleRunner;
+import optimax.workshop.guesser.Guesser;
+import optimax.workshop.wordsource.SolutionGenerator;
+import optimax.workshop.wordsource.WordAccepter;
 import optimax.workshop.core.match.WordMatcher;
 
 /**
+ * A single {@link WordleRunner} that runs the Wordle Game only once, dispatching
+ * all the necessary information to the {@link GameLifecycleObserver}
+ *
  * @author Denys Chernyshov
  * @since 1.0
  */
@@ -25,7 +28,7 @@ public class SingleWordleRunner implements WordleRunner {
     private final WordAccepter accepter;
     private final SolutionGenerator generator;
     private final Guesser guesser;
-    private final GameObserver observer;
+    private final GameLifecycleObserver observer;
     private final WordMatcher matcher;
 
     public SingleWordleRunner(int maxAttempts,
@@ -34,7 +37,7 @@ public class SingleWordleRunner implements WordleRunner {
                               SolutionGenerator generator,
                               WordAccepter accepter,
                               Guesser guesser,
-                              GameObserver observer,
+                              GameLifecycleObserver observer,
                               WordMatcher matcher) {
         this.maxAttempts = maxAttempts;
         this.generator = requireNonNull(generator);
@@ -46,7 +49,7 @@ public class SingleWordleRunner implements WordleRunner {
         this.accepter = requireNonNull(accepter);
     }
 
-    public void run(){
+    public void run() {
         Word solution = generator.nextSolution();
 
         guesser.init(visibleSolutions, visibleAccepted);
@@ -55,7 +58,7 @@ public class SingleWordleRunner implements WordleRunner {
         verifyGame(solution, maxAttempts);
         boolean isSolved = false;
         int attempt = 0;
-        while (attempt < maxAttempts && !isSolved){
+        while (attempt < maxAttempts && !isSolved) {
             observer.onGuessExpected();
             Word guess = requireNonNull(guesser.nextGuess(), "The submitted guess must not be null");
 
@@ -76,17 +79,17 @@ public class SingleWordleRunner implements WordleRunner {
         return isSolved(result);
     }
 
-    private boolean isSolved(MatchResult result){
+    private boolean isSolved(MatchResult result) {
         return result
                 .getMatches()
                 .stream()
                 .allMatch(m -> m.getType() == MatchType.CORRECT);
     }
 
-    private void verifyGame(Word solution, int maxAttempts){
+    private void verifyGame(Word solution, int maxAttempts) {
         if (accepter.isNotAccepted(solution))
             throw new IllegalArgumentException(format("Solution (%s) is not accepted", solution));
-        if (maxAttempts <= 0){
+        if (maxAttempts <= 0) {
             throw new IllegalArgumentException(format("Max attempts cannot be less than or equal to zero, but was: %d", maxAttempts));
         }
     }

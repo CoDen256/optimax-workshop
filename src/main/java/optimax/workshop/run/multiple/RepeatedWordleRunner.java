@@ -1,7 +1,7 @@
-package optimax.workshop.run;
+package optimax.workshop.run.multiple;
 
 import java.util.function.Supplier;
-import optimax.workshop.run.observer.GameObserver;
+import optimax.workshop.run.WordleRunner;
 
 /**
  * @author Denys Chernyshov
@@ -9,11 +9,11 @@ import optimax.workshop.run.observer.GameObserver;
  */
 public class RepeatedWordleRunner implements WordleRunner {
     private final Supplier<WordleRunner> runner;
-    private final GameObserver observer;
+    private final AppLifecycleObserver observer;
     private final int limit;
 
     public RepeatedWordleRunner(int limit,
-                                GameObserver observer,
+                                AppLifecycleObserver observer,
                                 Supplier<WordleRunner> runner
 
     ) {
@@ -24,10 +24,10 @@ public class RepeatedWordleRunner implements WordleRunner {
 
     @Override
     public void run() {
-        observer.onRunLaunched(limit);
+        observer.onLaunched(limit);
         for (int i = 0; i < limit; i++) {
             runner.get().run();
         }
-        observer.onRunFinished();
+        observer.onFinished();
     }
 }

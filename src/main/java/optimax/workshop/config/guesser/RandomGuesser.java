@@ -5,8 +5,8 @@ import optimax.workshop.config.generator.RandomLetterSolutionGenerator;
 import optimax.workshop.config.generator.CollectionSolutionGenerator;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.match.MatchResult;
-import optimax.workshop.run.guesser.Guesser;
-import optimax.workshop.run.words.SolutionGenerator;
+import optimax.workshop.guesser.Guesser;
+import optimax.workshop.wordsource.SolutionGenerator;
 
 /**
  * The {@code RandomGuesser} makes guesses randomly. If the given solutions is empty

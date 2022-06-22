@@ -1,31 +1,34 @@
-package optimax.workshop.config.runner;
+package optimax.workshop.config;
 
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.match.MatchResult;
 import optimax.workshop.core.match.WordMatcher;
-import optimax.workshop.run.RepeatedWordleRunner;
+import optimax.workshop.guesser.Guesser;
+import optimax.workshop.guesser.RotatingGuesserFactory;
 import optimax.workshop.run.WordleRunner;
-import optimax.workshop.run.SingleWordleRunner;
-import optimax.workshop.run.guesser.Guesser;
-import optimax.workshop.run.guesser.RotatingGuesserFactory;
-import optimax.workshop.run.observer.AggregatedGameObserver;
-import optimax.workshop.run.observer.GameObserver;
-import optimax.workshop.run.words.SolutionGenerator;
-import optimax.workshop.run.words.WordAccepter;
+import optimax.workshop.run.full.FullLifecycleObserver;
+import optimax.workshop.run.full.GameRecorder;
+import optimax.workshop.run.multiple.AppObserver;
+import optimax.workshop.run.multiple.RepeatedWordleRunner;
+import optimax.workshop.run.single.GameLifecycleObserver;
+import optimax.workshop.run.single.GameObserver;
+import optimax.workshop.run.single.SingleWordleRunner;
+import optimax.workshop.wordsource.SolutionGenerator;
+import optimax.workshop.wordsource.WordAccepter;
 
 /**
+ * Builds a {@link RepeatedWordleRunner}
+ *
  * @author Denys Chernyshov
  * @since 1.0
  */
-public class GameRunnerBuilder {
+public class RepeatedWordleRunnerBuilder {
 
     private WordMatcher matcher;
     private int maxAttempts;
@@ -33,8 +36,10 @@ public class GameRunnerBuilder {
     private Collection<Word> visibleAccepted;
     private SolutionGenerator generator;
     private WordAccepter accepter;
+
+    private GameObserver gameObserver;
+    private AppObserver appObserver;
     private final List<Supplier<Guesser>> guessers = new ArrayList<>();
-    private final List<Supplier<GameObserver>> observers = new ArrayList<>();
     private int limit;
 
     /**
@@ -44,7 +49,7 @@ public class GameRunnerBuilder {
      * @param accepted
      *         the accepted words set provided to the {@link Guesser}
      */
-    public GameRunnerBuilder acceptedVisibleToGuesser(Collection<Word> accepted) {
+    public RepeatedWordleRunnerBuilder acceptedVisibleToGuesser(Collection<Word> accepted) {
         this.visibleAccepted = new ArrayList<>(accepted);
         return this;
     }
@@ -56,7 +61,7 @@ public class GameRunnerBuilder {
      * @param solutions
      *         the solution set provided to the {@link Guesser}
      */
-    public GameRunnerBuilder solutionsVisibleToGuesser(Collection<Word> solutions) {
+    public RepeatedWordleRunnerBuilder solutionsVisibleToGuesser(Collection<Word> solutions) {
         this.visibleSolutions = new ArrayList<>(solutions);
         return this;
     }
@@ -67,7 +72,7 @@ public class GameRunnerBuilder {
      * @param accepter
      *         the word accepter
      */
-    public GameRunnerBuilder accepter(WordAccepter accepter) {
+    public RepeatedWordleRunnerBuilder accepter(WordAccepter accepter) {
         this.accepter = accepter;
         return this;
     }
@@ -78,7 +83,7 @@ public class GameRunnerBuilder {
      * @param generator
      *         the solution generator
      */
-    public GameRunnerBuilder generator(SolutionGenerator generator) {
+    public RepeatedWordleRunnerBuilder generator(SolutionGenerator generator) {
         this.generator = generator;
         return this;
     }
@@ -91,18 +96,31 @@ public class GameRunnerBuilder {
      *         the guesser supplier
      * @see RotatingGuesserFactory
      */
-    public GameRunnerBuilder addGuesser(Supplier<Guesser> guesser) {
+    public RepeatedWordleRunnerBuilder addGuesser(Supplier<Guesser> guesser) {
         this.guessers.add(guesser);
         return this;
     }
 
-    public GameRunnerBuilder addObserver(Supplier<GameObserver> observer) {
-        this.observers.add(observer);
+    /**
+     * Sets the {@link GameObserver} that will observe a single game run
+     *
+     * @param gameObserver
+     *         the single game run observer
+     */
+    public RepeatedWordleRunnerBuilder observer(GameObserver gameObserver) {
+        this.gameObserver = gameObserver;
         return this;
     }
 
-    public GameRunnerBuilder addObserver(GameObserver observer) {
-        return addObserver(() -> observer);
+    /**
+     * Sets the {@link GameObserver} that will observe a multiple game runs
+     *
+     * @param appObserver
+     *         the multiple game run observer
+     */
+    public RepeatedWordleRunnerBuilder observer(AppObserver appObserver) {
+        this.appObserver = appObserver;
+        return this;
     }
 
     /**
@@ -112,7 +130,7 @@ public class GameRunnerBuilder {
      * @param matcher
      *         the word matcher
      */
-    public GameRunnerBuilder matcher(WordMatcher matcher) {
+    public RepeatedWordleRunnerBuilder matcher(WordMatcher matcher) {
         this.matcher = matcher;
         return this;
     }
@@ -123,7 +141,7 @@ public class GameRunnerBuilder {
      * @param maxAttempts
      *         the number of attempts per each game
      */
-    public GameRunnerBuilder maxAttempts(int maxAttempts) {
+    public RepeatedWordleRunnerBuilder maxAttempts(int maxAttempts) {
         this.maxAttempts = maxAttempts;
         return this;
     }
@@ -134,7 +152,7 @@ public class GameRunnerBuilder {
      * @param limit
      *         the number of runs
      */
-    public GameRunnerBuilder runLimit(int limit) {
+    public RepeatedWordleRunnerBuilder runLimit(int limit) {
         this.limit = limit;
         return this;
     }
@@ -144,19 +162,19 @@ public class GameRunnerBuilder {
      * based on the previously set parameters
      */
     public WordleRunner build() {
-        GameObserver observer = buildObserver();
-        Supplier<Guesser> guesserSupplier = buildGuesserFactory();
-        return new RepeatedWordleRunner(limit, observer, () -> buildRunner(observer, guesserSupplier));
+        FullLifecycleObserver observer = new GameRecorder(appObserver, gameObserver);
+        Supplier<Guesser> guesserFactory = buildGuesserFactory();
+        return new RepeatedWordleRunner(limit, observer, () -> buildSingleRunner(observer, guesserFactory));
     }
 
-    private WordleRunner buildRunner(GameObserver observer, Supplier<Guesser> guesserSupplier) {
+    private WordleRunner buildSingleRunner(GameLifecycleObserver observer, Supplier<Guesser> guesserFactory) {
         return new SingleWordleRunner(
                 maxAttempts,
                 requireNonNull(visibleSolutions, "You have to set visible to guesser solutions"),
                 requireNonNull(visibleAccepted, "You have to set visible to accepted words"),
                 requireNonNull(generator, "You have to set solution generator (e.g. accepter(new CollectionSolutionGenerator(src))"),
                 requireNonNull(accepter, "You have to set the word accepter (e.g. accepter(new CollectionAccepter(src))"),
-                guesserSupplier.get(),
+                guesserFactory.get(),
                 observer,
                 requireNonNull(matcher, "You have to provide a word matcher ( `matcher(new StandardMatcher())` call is probably missing)")
         );
@@ -167,13 +185,6 @@ public class GameRunnerBuilder {
             throw new IllegalArgumentException("You have to provide a guesser (e.g. guesser(new GuesserImpl())");
         }
         return new RotatingGuesserFactory(limit, guessers);
-    }
-
-    private GameObserver buildObserver() {
-        return new AggregatedGameObserver(observers.stream()
-                .map(Objects::requireNonNull)
-                .map(Supplier::get)
-                .collect(Collectors.toList()));
     }
 
 }

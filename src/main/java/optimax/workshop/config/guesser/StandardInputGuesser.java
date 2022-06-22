@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Scanner;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.match.MatchResult;
-import optimax.workshop.run.guesser.Guesser;
+import optimax.workshop.guesser.Guesser;
 
 /**
  * A {@link Guesser} that uses {@link System#in}, i.e. the user input

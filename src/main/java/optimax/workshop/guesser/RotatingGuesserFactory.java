@@ -1,4 +1,4 @@
-package optimax.workshop.run.guesser;
+package optimax.workshop.guesser;
 
 import java.util.ArrayList;
 import java.util.List;

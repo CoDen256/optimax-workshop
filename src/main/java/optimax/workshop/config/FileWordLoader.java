@@ -1,4 +1,4 @@
-package optimax.workshop.parse;
+package optimax.workshop.config;
 
 import static java.lang.String.format;
 

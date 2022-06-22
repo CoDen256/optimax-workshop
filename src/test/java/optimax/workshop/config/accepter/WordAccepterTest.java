@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import optimax.workshop.core.Word;
-import optimax.workshop.run.words.WordAccepter;
+import optimax.workshop.wordsource.WordAccepter;
 import org.junit.jupiter.api.Test;
 
 

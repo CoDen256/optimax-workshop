@@ -3,7 +3,7 @@ package optimax.workshop.config.accepter;
 import java.util.Collection;
 import java.util.HashSet;
 import optimax.workshop.core.Word;
-import optimax.workshop.run.words.WordAccepter;
+import optimax.workshop.wordsource.WordAccepter;
 
 /**
  * A {@link WordAccepter} that accepts only the words from the given collection

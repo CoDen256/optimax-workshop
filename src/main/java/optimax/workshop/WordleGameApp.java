@@ -3,16 +3,16 @@ package optimax.workshop;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Collection;
-import optimax.workshop.parse.FileWordLoader;
+import optimax.workshop.config.FileWordLoader;
+import optimax.workshop.config.RepeatedWordleRunnerBuilder;
 import optimax.workshop.config.accepter.CollectionAccepter;
 import optimax.workshop.config.generator.CollectionSolutionGenerator;
-import optimax.workshop.config.guesser.CategoryDivisionGuesser;
-import optimax.workshop.core.match.StandardMatcher;
+import optimax.workshop.config.guesser.RandomGuesser;
+import optimax.workshop.config.guesser.SimpleGuesser;
 import optimax.workshop.config.observer.ConsoleMinimalPrinter;
 import optimax.workshop.config.observer.ScorePrettyPrinter;
-import optimax.workshop.score.Scorer;
-import optimax.workshop.config.runner.GameRunnerBuilder;
 import optimax.workshop.core.Word;
+import optimax.workshop.core.match.StandardMatcher;
 import optimax.workshop.run.WordleRunner;
 
 public class WordleGameApp {
@@ -26,9 +26,10 @@ public class WordleGameApp {
         Collection<Word> solutions = FileWordLoader.load(path("/words-mini.txt"));
         // The accepted words
         Collection<Word> accepted = FileWordLoader.load(path("/words-distinct.txt"));
-        return new GameRunnerBuilder()
+        return new RepeatedWordleRunnerBuilder()
                 // The guesser (created each time newly for each game)
-                .addGuesser(() -> new CategoryDivisionGuesser())
+                .addGuesser(() -> new SimpleGuesser())
+                .addGuesser(() -> new RandomGuesser())
 
                 // Solutions that are visible to the guessers
                 .solutionsVisibleToGuesser(solutions)
@@ -40,11 +41,9 @@ public class WordleGameApp {
                 // Accepter based on the accepted words
                 .accepter(new CollectionAccepter(accepted))
 
-                .addObserver(new Scorer(
-//                        new ConsolePrettyPrinter(true),
-                        new ConsoleMinimalPrinter(false, false, true, false),
-                        new ScorePrettyPrinter()
-                ))
+                .observer(new ScorePrettyPrinter())
+                .observer(new ConsoleMinimalPrinter(false, false, true, false))
+//                .observer(new ConsoleFullPrinter(true))
 
                 .maxAttempts(6)            // Max attempts per game
                 .runLimit(1000)           // Total amount of games

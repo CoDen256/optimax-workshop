@@ -7,14 +7,19 @@ import static optimax.workshop.config.observer.ConsoleUtils.print;
 import static optimax.workshop.config.observer.ConsoleUtils.println;
 
 import java.util.stream.Collectors;
-import optimax.workshop.run.observer.EmptyGameStateObserver;
-import optimax.workshop.score.GameSnapshot;
+import optimax.workshop.core.Word;
+import optimax.workshop.run.single.GameObserver;
+import optimax.workshop.run.single.GameSnapshot;
+import optimax.workshop.run.single.SingleWordleRunner;
 
 /**
+ * Prints out minimally the lifecycle of the {@link SingleWordleRunner} and
+ * corresponding state of a single game
+ *
  * @author Denys Chernyshov
  * @since 1.0
  */
-public class ConsoleMinimalPrinter extends EmptyGameStateObserver {
+public class ConsoleMinimalPrinter implements GameObserver {
 
     private final boolean printGuesser;
     private final boolean printGuessesNumber;
@@ -26,6 +31,26 @@ public class ConsoleMinimalPrinter extends EmptyGameStateObserver {
         this.printGuessesNumber = printGuessesNumber;
         this.printSolution = printSolution;
         this.printGuesses = printGuesses;
+    }
+
+    @Override
+    public void onGameCreated(GameSnapshot snapshot) {
+
+    }
+
+    @Override
+    public void onGuessExpected(GameSnapshot snapshot) {
+
+    }
+
+    @Override
+    public void onGuessSubmitted(GameSnapshot snapshot) {
+
+    }
+
+    @Override
+    public void onGuessRejected(Word guess, GameSnapshot snapshot) {
+
     }
 
     @Override

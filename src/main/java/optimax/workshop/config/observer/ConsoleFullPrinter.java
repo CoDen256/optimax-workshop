@@ -8,19 +8,22 @@ import static optimax.workshop.config.observer.ConsoleUtils.repeated;
 
 import optimax.workshop.core.Word;
 import optimax.workshop.core.match.MatchResult;
-import optimax.workshop.run.observer.EmptyGameStateObserver;
-import optimax.workshop.score.GameSnapshot;
+import optimax.workshop.run.single.GameObserver;
+import optimax.workshop.run.single.GameSnapshot;
+import optimax.workshop.run.single.SingleWordleRunner;
 
 /**
+ * Prints out the full lifecycle of the {@link SingleWordleRunner} and
+ * corresponding state of a single game
+ *
  * @author Denys Chernyshov
  * @since 1.0
  */
-public class ConsolePrettyPrinter extends EmptyGameStateObserver {
-
+public class ConsoleFullPrinter implements GameObserver {
 
     private final boolean printSolution;
 
-    public ConsolePrettyPrinter(boolean printSolution) {
+    public ConsoleFullPrinter(boolean printSolution) {
         this.printSolution = printSolution;
     }
 

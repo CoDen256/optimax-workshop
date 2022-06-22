@@ -1,7 +1,7 @@
 package optimax.workshop.config.accepter;
 
 import optimax.workshop.core.Word;
-import optimax.workshop.run.words.WordAccepter;
+import optimax.workshop.wordsource.WordAccepter;
 
 /**
  * A {@link WordAccepter} that accepts any given word

@@ -1,4 +1,4 @@
-package optimax.workshop.score;
+package optimax.workshop.run.single;
 
 import static java.lang.String.format;
 
@@ -7,11 +7,11 @@ import java.util.Collections;
 import java.util.List;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.match.MatchResult;
-import optimax.workshop.run.guesser.Guesser;
-import optimax.workshop.run.words.WordAccepter;
+import optimax.workshop.guesser.Guesser;
+import optimax.workshop.wordsource.WordAccepter;
 
 /**
- * A {@code GameSnapshot} is a snapshot of a single game, that contains its current
+ * A {@code GameSnapshot} is a snapshot of a <b>single</b> game, that contains its current
  * state as well as corresponding metrics and scores
  */
 public class GameSnapshot {
@@ -25,31 +25,42 @@ public class GameSnapshot {
     private final List<MatchResult> matches = new ArrayList<>();
     /** Current game index */
     private final int gameIndex;
-    /** The total game time */
-    private final long millis;
-    /**  */
+    /** The time game started */
+    private final long startMillis;
+
+    /** The time game ended */
+    private final long endMillis;
+    /** The {@link Guesser} being used in the game */
     private final Guesser guesser;
+    /** The {@link WordAccepter} being used in the game */
     private final WordAccepter accepter;
 
-    public GameSnapshot(Word solution, int gameIndex, Guesser guesser, WordAccepter accepter) {
+    public GameSnapshot(Word solution, int gameIndex, long startMillis, Guesser guesser, WordAccepter accepter) {
         this.solution = solution;
         this.gameIndex = gameIndex;
         this.isSolved = false;
         this.guesser = guesser;
         this.accepter = accepter;
-        this.millis = 0;
+        this.endMillis = 0;
+        this.startMillis = startMillis;
     }
 
     private GameSnapshot(Word solution, int gameIndex, Guesser guesser, WordAccepter accepter,
-                         boolean isSolved, long millis, List<Word> guesses, List<MatchResult> matches) {
+                         boolean isSolved, long startMillis, long endMillis,
+                         List<Word> guesses, List<MatchResult> matches) {
         this.solution = solution;
         this.isSolved = isSolved;
         this.gameIndex = gameIndex;
         this.guesser = guesser;
         this.accepter = accepter;
-        this.millis = millis;
+        this.startMillis = startMillis;
+        this.endMillis = endMillis;
         this.guesses.addAll(guesses);
         this.matches.addAll(matches);
+        verifySubmittedGuesses(guesses, matches);
+    }
+
+    private void verifySubmittedGuesses(List<Word> guesses, List<MatchResult> matches) {
         if (guesses.size() != matches.size()) {
             throw new IllegalArgumentException(format("Number of submit guesses must equal the number of matches:"
                     + " %d guesses != %d matches", guesses.size(), matches.size()));
@@ -76,8 +87,16 @@ public class GameSnapshot {
         return guesses.get(guesses.size() - 1);
     }
 
-    public long getMillis() {
-        return millis;
+    public long getDurationMillis() {
+        return endMillis-startMillis;
+    }
+
+    public long getStartMillis() {
+        return startMillis;
+    }
+
+    public long getEndMillis() {
+        return endMillis;
     }
 
     public MatchResult getLastMatch() {
@@ -105,10 +124,13 @@ public class GameSnapshot {
         newMatches.add(match);
         List<Word> newGuesses = new ArrayList<>(getGuesses());
         newGuesses.add(guess);
-        return new GameSnapshot(solution, gameIndex, guesser, accepter, isSolved, millis, newGuesses, newMatches);
+        return new GameSnapshot(solution, gameIndex, guesser,
+                accepter, isSolved,
+                startMillis, endMillis,
+                newGuesses, newMatches);
     }
 
-    public GameSnapshot setSolved(boolean isSolved, long millis) {
-        return new GameSnapshot(solution, gameIndex, guesser, accepter, isSolved, millis, guesses, matches);
+    public GameSnapshot setSolved(boolean isSolved, long endMillis) {
+        return new GameSnapshot(solution, gameIndex, guesser, accepter, isSolved, startMillis, endMillis, guesses, matches);
     }
 }

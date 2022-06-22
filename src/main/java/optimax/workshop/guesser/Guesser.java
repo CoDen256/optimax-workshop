@@ -1,4 +1,4 @@
-package optimax.workshop.run.guesser;
+package optimax.workshop.guesser;
 
 import java.util.Collection;
 import optimax.workshop.core.Word;

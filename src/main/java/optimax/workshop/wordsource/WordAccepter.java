@@ -1,7 +1,7 @@
-package optimax.workshop.run.words;
+package optimax.workshop.wordsource;
 
 import optimax.workshop.core.Word;
-import optimax.workshop.run.guesser.Guesser;
+import optimax.workshop.guesser.Guesser;
 
 /**
  * A {@code WordAccepter} tells whether the given {@link Word} will be accepted

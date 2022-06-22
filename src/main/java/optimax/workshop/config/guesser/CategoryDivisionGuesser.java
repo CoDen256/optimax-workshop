@@ -16,7 +16,7 @@ import optimax.workshop.core.Word;
 import optimax.workshop.core.match.Match;
 import optimax.workshop.core.match.MatchResult;
 import optimax.workshop.core.match.MatchType;
-import optimax.workshop.run.guesser.Guesser;
+import optimax.workshop.guesser.Guesser;
 import optimax.workshop.core.match.WordMatcher;
 
 /**

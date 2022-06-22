@@ -3,7 +3,7 @@ package optimax.workshop;
 import java.util.Collection;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.match.MatchResult;
-import optimax.workshop.run.guesser.Guesser;
+import optimax.workshop.guesser.Guesser;
 
 /**
  * The {@link Guesser} represents a strategy for making guesses in the Wordle Game
