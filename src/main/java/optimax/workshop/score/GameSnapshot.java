@@ -1,4 +1,4 @@
-package optimax.workshop.stats;
+package optimax.workshop.score;
 
 import static java.lang.String.format;
 
@@ -10,19 +10,24 @@ import optimax.workshop.core.match.MatchResult;
 import optimax.workshop.run.guesser.Guesser;
 import optimax.workshop.run.words.WordAccepter;
 
+/**
+ * A {@code GameSnapshot} is a snapshot of a single game, that contains its current
+ * state as well as corresponding metrics and scores
+ */
 public class GameSnapshot {
-
+    /** The solution of the game */
     private final Word solution;
-
+    /** Tells whether the game is solved of failed */
     private final boolean isSolved;
-
+    /** The ordered <b>valid</b> guesses that were made */
     private final List<Word> guesses = new ArrayList<>();
-
+    /** The ordered matches corresponding to the submitted guesses */
     private final List<MatchResult> matches = new ArrayList<>();
-
+    /** Current game index */
     private final int gameIndex;
-
+    /** The total game time */
     private final long millis;
+    /**  */
     private final Guesser guesser;
     private final WordAccepter accepter;
 
@@ -67,15 +72,15 @@ public class GameSnapshot {
         return Collections.unmodifiableList(matches);
     }
 
-    public Word getLastGuess(){
-        return guesses.get(guesses.size()-1);
+    public Word getLastGuess() {
+        return guesses.get(guesses.size() - 1);
     }
 
     public long getMillis() {
         return millis;
     }
 
-    public MatchResult getLastMatch(){
+    public MatchResult getLastMatch() {
         return matches.get(matches.size() - 1);
     }
 
@@ -104,6 +109,6 @@ public class GameSnapshot {
     }
 
     public GameSnapshot setSolved(boolean isSolved, long millis) {
-        return new GameSnapshot(solution, gameIndex, guesser, accepter, isSolved,millis, guesses, matches);
+        return new GameSnapshot(solution, gameIndex, guesser, accepter, isSolved, millis, guesses, matches);
     }
 }

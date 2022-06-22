@@ -1,8 +1,7 @@
 package optimax.workshop.run.observer;
 
 import optimax.workshop.core.Word;
-import optimax.workshop.run.observer.GameStateObserver;
-import optimax.workshop.stats.GameSnapshot;
+import optimax.workshop.score.GameSnapshot;
 
 public class EmptyGameStateObserver implements GameStateObserver {
 

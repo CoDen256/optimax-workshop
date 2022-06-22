@@ -1,7 +1,7 @@
 package optimax.workshop.run.observer;
 
 import optimax.workshop.core.Word;
-import optimax.workshop.stats.GameSnapshot;
+import optimax.workshop.score.GameSnapshot;
 
 public interface GameStateObserver {
     void onGameCreated(GameSnapshot snapshot);

@@ -8,7 +8,7 @@ import static optimax.workshop.config.observer.ConsoleUtils.println;
 
 import java.util.stream.Collectors;
 import optimax.workshop.run.observer.EmptyGameStateObserver;
-import optimax.workshop.stats.GameSnapshot;
+import optimax.workshop.score.GameSnapshot;
 
 /**
  * @author Denys Chernyshov

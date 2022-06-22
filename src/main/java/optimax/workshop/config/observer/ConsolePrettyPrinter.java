@@ -9,7 +9,7 @@ import static optimax.workshop.config.observer.ConsoleUtils.repeated;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.match.MatchResult;
 import optimax.workshop.run.observer.EmptyGameStateObserver;
-import optimax.workshop.stats.GameSnapshot;
+import optimax.workshop.score.GameSnapshot;
 
 /**
  * @author Denys Chernyshov

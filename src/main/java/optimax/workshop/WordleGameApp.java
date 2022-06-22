@@ -10,7 +10,7 @@ import optimax.workshop.config.guesser.CategoryDivisionGuesser;
 import optimax.workshop.core.match.StandardMatcher;
 import optimax.workshop.config.observer.ConsoleMinimalPrinter;
 import optimax.workshop.config.observer.ScorePrettyPrinter;
-import optimax.workshop.config.observer.Scorer;
+import optimax.workshop.score.Scorer;
 import optimax.workshop.config.runner.GameRunnerBuilder;
 import optimax.workshop.core.Word;
 import optimax.workshop.run.WordleRunner;

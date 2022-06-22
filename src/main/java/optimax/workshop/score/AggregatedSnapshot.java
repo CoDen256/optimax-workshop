@@ -1,4 +1,4 @@
-package optimax.workshop.stats;
+package optimax.workshop.score;
 
 import java.util.Collections;
 import java.util.List;

@@ -1,16 +1,14 @@
-package optimax.workshop.config.observer;
+package optimax.workshop.score;
 
 import java.util.ArrayList;
 import java.util.List;
 import optimax.workshop.core.Word;
 import optimax.workshop.core.match.MatchResult;
+import optimax.workshop.run.guesser.Guesser;
 import optimax.workshop.run.observer.FullObserver;
 import optimax.workshop.run.observer.GameObserver;
 import optimax.workshop.run.observer.GameStateObserver;
-import optimax.workshop.run.guesser.Guesser;
 import optimax.workshop.run.words.WordAccepter;
-import optimax.workshop.stats.AggregatedSnapshot;
-import optimax.workshop.stats.GameSnapshot;
 
 /**
  * @author Denys Chernyshov

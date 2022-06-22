@@ -11,8 +11,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import optimax.workshop.run.observer.FullObserver;
-import optimax.workshop.stats.AggregatedSnapshot;
-import optimax.workshop.stats.GameSnapshot;
+import optimax.workshop.score.AggregatedSnapshot;
+import optimax.workshop.score.GameSnapshot;
 
 public class ScorePrettyPrinter implements FullObserver {
     public static final int FIRST_COLUMN_WIDTH = 32;

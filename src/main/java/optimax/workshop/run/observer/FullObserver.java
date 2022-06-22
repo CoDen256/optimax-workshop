@@ -1,6 +1,6 @@
 package optimax.workshop.run.observer;
 
-import optimax.workshop.stats.AggregatedSnapshot;
+import optimax.workshop.score.AggregatedSnapshot;
 
 public interface FullObserver {
     void onRunLaunched(int totalRuns);
