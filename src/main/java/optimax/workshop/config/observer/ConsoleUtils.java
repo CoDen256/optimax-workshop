@@ -4,9 +4,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import optimax.workshop.core.Word;
-import optimax.workshop.core.matcher.Match;
-import optimax.workshop.core.matcher.MatchResult;
-import optimax.workshop.core.matcher.MatchType;
+import optimax.workshop.core.match.Match;
+import optimax.workshop.core.match.MatchResult;
+import optimax.workshop.core.match.MatchType;
 
 /**
  * @author Denys Chernyshov

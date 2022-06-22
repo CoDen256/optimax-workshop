@@ -7,7 +7,7 @@ import static optimax.workshop.config.observer.ConsoleUtils.print;
 import static optimax.workshop.config.observer.ConsoleUtils.println;
 
 import java.util.stream.Collectors;
-import optimax.workshop.core.matcher.MatchResult;
+import optimax.workshop.run.observer.EmptyGameStateObserver;
 import optimax.workshop.stats.GameSnapshot;
 
 /**

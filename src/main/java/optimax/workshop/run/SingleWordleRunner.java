@@ -1,24 +1,23 @@
-package optimax.workshop.config.runner;
+package optimax.workshop.run;
 
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Collection;
 import optimax.workshop.core.Word;
-import optimax.workshop.core.matcher.MatchResult;
-import optimax.workshop.core.matcher.MatchType;
-import optimax.workshop.runner.GameObserver;
-import optimax.workshop.runner.GameRunner;
-import optimax.workshop.runner.Guesser;
-import optimax.workshop.runner.SolutionGenerator;
-import optimax.workshop.runner.WordAccepter;
-import optimax.workshop.runner.WordMatcher;
+import optimax.workshop.core.match.MatchResult;
+import optimax.workshop.core.match.MatchType;
+import optimax.workshop.run.observer.GameObserver;
+import optimax.workshop.run.guesser.Guesser;
+import optimax.workshop.run.words.SolutionGenerator;
+import optimax.workshop.run.words.WordAccepter;
+import optimax.workshop.core.match.WordMatcher;
 
 /**
  * @author Denys Chernyshov
  * @since 1.0
  */
-public class WordleRunner implements GameRunner {
+public class SingleWordleRunner implements WordleRunner {
 
     private final int maxAttempts;
     private final Collection<Word> visibleSolutions;
@@ -29,14 +28,14 @@ public class WordleRunner implements GameRunner {
     private final GameObserver observer;
     private final WordMatcher matcher;
 
-    public WordleRunner(int maxAttempts,
-                        Collection<Word> visibleSolutions,
-                        Collection<Word> visibleAccepted,
-                        SolutionGenerator generator,
-                        WordAccepter accepter,
-                        Guesser guesser,
-                        GameObserver observer,
-                        WordMatcher matcher) {
+    public SingleWordleRunner(int maxAttempts,
+                              Collection<Word> visibleSolutions,
+                              Collection<Word> visibleAccepted,
+                              SolutionGenerator generator,
+                              WordAccepter accepter,
+                              Guesser guesser,
+                              GameObserver observer,
+                              WordMatcher matcher) {
         this.maxAttempts = maxAttempts;
         this.generator = requireNonNull(generator);
         this.visibleSolutions = requireNonNull(visibleSolutions);
@@ -58,7 +57,7 @@ public class WordleRunner implements GameRunner {
         int attempt = 0;
         while (attempt < maxAttempts && !isSolved){
             observer.onGuessExpected();
-            Word guess = guesser.nextGuess();
+            Word guess = requireNonNull(guesser.nextGuess(), "The submitted guess must not be null");
 
             if (accepter.isNotAccepted(guess)) {
                 observer.onGuessRejected(guess);

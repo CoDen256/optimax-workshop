@@ -11,18 +11,20 @@ import java.util.Random;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import optimax.workshop.core.match.StandardMatcher;
 import optimax.workshop.core.Word;
-import optimax.workshop.core.matcher.Match;
-import optimax.workshop.core.matcher.MatchResult;
-import optimax.workshop.core.matcher.MatchType;
-import optimax.workshop.runner.Guesser;
-import optimax.workshop.runner.WordMatcher;
+import optimax.workshop.core.match.Match;
+import optimax.workshop.core.match.MatchResult;
+import optimax.workshop.core.match.MatchType;
+import optimax.workshop.run.guesser.Guesser;
+import optimax.workshop.core.match.WordMatcher;
 
 /**
+ * The {@link CategoryDivisionGuesser}
  * @author Denys Chernyshov
  * @since 1.0
  */
-public class RegexBasedGuesser implements Guesser {
+public class CategoryDivisionGuesser implements Guesser {
 
     public static final String MATCH_ANY_LETTER_REGEX = "[ABCDEFGHIJKLMNOPQRSTUVWXYZ]";
 
@@ -37,12 +39,8 @@ public class RegexBasedGuesser implements Guesser {
 
     private final Random random = new Random();
     private final WordMatcher matcher;
-
-    private static Word opener = null;
-
-    private boolean started = false;
-    public RegexBasedGuesser(WordMatcher matcher) {
-        this.matcher = matcher;
+    public CategoryDivisionGuesser() {
+        this.matcher = new StandardMatcher();
     }
 
     @Override
@@ -53,12 +51,6 @@ public class RegexBasedGuesser implements Guesser {
 
     @Override
     public Word nextGuess() {
-        if (!started){
-            started = true;
-            if (opener != null){
-                return opener;
-            }
-        }
         List<String> matches = getMatches().collect(Collectors.toList());
         System.out.println("Matches: "+matches);
         if (matches.size() <= 2) return new Word(matches.get(0));
@@ -91,9 +83,6 @@ public class RegexBasedGuesser implements Guesser {
 //        List<GroupSet> sorted = groupSets.stream().sorted(Comparator.comparing(GroupSet::size).reversed()).collect(Collectors.toList());
         GroupSet bestGroupSet = groupSets.stream().max(Comparator.comparing(GroupSet::size)).get();
         Word guess = new Word(bestGroupSet.word);
-        if (opener == null){
-            opener = guess;
-        }
         return guess;
     }
 

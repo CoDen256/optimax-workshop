@@ -1,10 +1,10 @@
-package optimax.workshop.core.matcher;
+package optimax.workshop.core.match;
 
 import static com.google.common.truth.Truth.assertThat;
 import static java.util.Collections.emptyList;
-import static optimax.workshop.core.matcher.MatchType.ABSENT;
-import static optimax.workshop.core.matcher.MatchType.CORRECT;
-import static optimax.workshop.core.matcher.MatchType.WRONG;
+import static optimax.workshop.core.match.MatchType.ABSENT;
+import static optimax.workshop.core.match.MatchType.CORRECT;
+import static optimax.workshop.core.match.MatchType.WRONG;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;

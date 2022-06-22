@@ -1,8 +1,8 @@
 package optimax.workshop.config.guesser;
 
-import static optimax.workshop.core.matcher.MatchType.ABSENT;
-import static optimax.workshop.core.matcher.MatchType.CORRECT;
-import static optimax.workshop.core.matcher.MatchType.WRONG;
+import static optimax.workshop.core.match.MatchType.ABSENT;
+import static optimax.workshop.core.match.MatchType.CORRECT;
+import static optimax.workshop.core.match.MatchType.WRONG;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,9 +12,9 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import optimax.workshop.core.Word;
-import optimax.workshop.core.matcher.Match;
-import optimax.workshop.core.matcher.MatchResult;
-import optimax.workshop.runner.Guesser;
+import optimax.workshop.core.match.Match;
+import optimax.workshop.core.match.MatchResult;
+import optimax.workshop.run.guesser.Guesser;
 
 public class SimpleGuesser implements Guesser {
 

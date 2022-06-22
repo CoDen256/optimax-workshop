@@ -7,7 +7,8 @@ import static optimax.workshop.config.observer.ConsoleUtils.println;
 import static optimax.workshop.config.observer.ConsoleUtils.repeated;
 
 import optimax.workshop.core.Word;
-import optimax.workshop.core.matcher.MatchResult;
+import optimax.workshop.core.match.MatchResult;
+import optimax.workshop.run.observer.EmptyGameStateObserver;
 import optimax.workshop.stats.GameSnapshot;
 
 /**

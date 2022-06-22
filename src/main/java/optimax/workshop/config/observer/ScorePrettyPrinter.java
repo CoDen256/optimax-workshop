@@ -10,7 +10,7 @@ import static optimax.workshop.config.observer.ConsoleUtils.repeated;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import optimax.workshop.runner.FullObserver;
+import optimax.workshop.run.observer.FullObserver;
 import optimax.workshop.stats.AggregatedSnapshot;
 import optimax.workshop.stats.GameSnapshot;
 

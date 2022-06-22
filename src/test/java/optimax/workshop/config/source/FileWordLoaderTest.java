@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
-import optimax.workshop.config.FileWordLoader;
+import optimax.workshop.parse.FileWordLoader;
 import optimax.workshop.core.Word;
 import org.junit.jupiter.api.Test;
 

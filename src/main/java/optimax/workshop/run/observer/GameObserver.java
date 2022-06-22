@@ -1,7 +1,9 @@
-package optimax.workshop.runner;
+package optimax.workshop.run.observer;
 
 import optimax.workshop.core.Word;
-import optimax.workshop.core.matcher.MatchResult;
+import optimax.workshop.core.match.MatchResult;
+import optimax.workshop.run.guesser.Guesser;
+import optimax.workshop.run.words.WordAccepter;
 
 /**
  * @author Denys Chernyshov

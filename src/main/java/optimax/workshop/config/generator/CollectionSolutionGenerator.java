@@ -1,23 +1,29 @@
 package optimax.workshop.config.generator;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 import optimax.workshop.core.Word;
-import optimax.workshop.runner.SolutionGenerator;
+import optimax.workshop.run.words.SolutionGenerator;
 
 /**
+ * A {@link SolutionGenerator} that generates next {@link Word} based
+ * on the given collections. Each {@link Word} is randomly picked from the collection
+ *
  * @author Denys Chernyshov
  * @since 1.0
  */
 public class CollectionSolutionGenerator implements SolutionGenerator {
-    private final Word[] source;
+    private final List<Word> source;
     private final Random random = new Random();
 
     public CollectionSolutionGenerator(Collection<Word> source) {
-        this.source = source.toArray(Word[]::new);
+        this.source = new ArrayList<>(source);
     }
+
     @Override
     public Word nextSolution() {
-        return source[random.nextInt(source.length)];
+        return source.get(random.nextInt(source.size()));
     }
 }

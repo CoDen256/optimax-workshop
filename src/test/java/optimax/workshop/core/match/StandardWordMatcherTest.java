@@ -1,9 +1,8 @@
-package optimax.workshop.core.matcher;
+package optimax.workshop.core.match;
 
 import static optimax.workshop.TestUtilities.word;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import optimax.workshop.config.matcher.StandardMatcher;
 import org.junit.jupiter.api.Test;
 
 /**

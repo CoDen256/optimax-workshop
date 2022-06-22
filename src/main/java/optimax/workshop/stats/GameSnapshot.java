@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import optimax.workshop.core.Word;
-import optimax.workshop.core.matcher.MatchResult;
-import optimax.workshop.runner.Guesser;
-import optimax.workshop.runner.WordAccepter;
+import optimax.workshop.core.match.MatchResult;
+import optimax.workshop.run.guesser.Guesser;
+import optimax.workshop.run.words.WordAccepter;
 
 public class GameSnapshot {
 

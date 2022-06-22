@@ -1,4 +1,4 @@
-package optimax.workshop.runner;
+package optimax.workshop.run.observer;
 
 import optimax.workshop.core.Word;
 import optimax.workshop.stats.GameSnapshot;
